@@ -4,6 +4,8 @@ name: "Dictovka DMG"
 
 on:
   workflow_dispatch:
+  push:
+    branches: [main]
 
 jobs:
   dmg:
