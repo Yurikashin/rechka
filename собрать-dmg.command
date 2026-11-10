@@ -54,4 +54,16 @@ mkdir -p "$ROOT/../готовый-dmg"
 cp "$DMG" "$ROOT/../готовый-dmg/"
 echo
 echo "ГОТОВО: $(cd "$ROOT/../готовый-dmg" && pwd)/$(basename "$DMG")"
-open "$ROOT/../готовый-dmg"
+
+# 7. Установка в «Программы» и запуск (заменяет только прошлую сборку Dictovka)
+APP_SRC="src-tauri/target/release/bundle/macos/Dictovka.app"
+APP_DST="/Applications/Dictovka.app"
+if [ -d "$APP_SRC" ]; then
+  osascript -e 'tell application id "ru.yurikashin.dictovka" to quit' >/dev/null 2>&1 || true
+  sleep 2
+  rm -rf "$APP_DST"
+  ditto "$APP_SRC" "$APP_DST"
+  touch "$APP_DST"   # чтобы Finder и Dock обновили иконку
+  echo "Установлено: $APP_DST"
+  open "$APP_DST"
+fi
