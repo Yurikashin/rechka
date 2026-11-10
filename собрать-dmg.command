@@ -74,6 +74,11 @@ CFG
 fi
 echo "Подписываю Dictovka сертификатом «${IDENT}»…"
 echo "(если macOS спросит доступ к ключу для codesign — нажмите «Разрешать всегда»)"
+# Подписываем чистую копию вне iCloud: метки iCloud/Finder мешают codesign
+SIGN_DIR="$(mktemp -d)"
+ditto --norsrc --noextattr --noqtn "$APP_SRC" "$SIGN_DIR/Dictovka.app"
+xattr -cr "$SIGN_DIR/Dictovka.app"
+APP_SRC="$SIGN_DIR/Dictovka.app"
 codesign --force --options runtime --entitlements src-tauri/Entitlements.plist --sign "${IDENT}" "$APP_SRC"
 codesign --verify --strict "$APP_SRC"
 codesign -dr - "$APP_SRC" 2>&1 | tail -1
