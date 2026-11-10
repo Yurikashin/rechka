@@ -17,8 +17,19 @@ const locale = () => navigator.language || "en-US";
 
 export const isChinese = (code: string) => code === "zh" || code === "yue";
 
-/** Likely spoken languages (always with English), falling back to the browser locale. */
+/** Dictovka: Russian + English are preselected on every machine. */
+const DICTOVKA_LANGUAGES = ["ru", "en"];
+
+/** Likely spoken languages: Russian and English first, then any other system languages. */
 export const suggestedLanguages = (): string[] => {
+  const extra = systemSuggestedLanguages().filter(
+    (code) => !DICTOVKA_LANGUAGES.includes(code),
+  );
+  return [...DICTOVKA_LANGUAGES, ...extra];
+};
+
+/** Likely spoken languages (always with English), falling back to the browser locale. */
+const systemSuggestedLanguages = (): string[] => {
   const guessed = system()?.languages;
   if (guessed?.length) return guessed;
   const code = languageIdentity(locale().split("_")[0]);
