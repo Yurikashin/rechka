@@ -2,6 +2,21 @@
 
 This file provides guidance to AI coding assistants working with code in this repository.
 
+## Rechka (this fork) — read first
+
+This is **«Речка» (Rechka)**, a Russian + English dictation app for macOS forked from Handy (MIT).
+Project-level map, status and rules (in Russian): `../AGENTS.md`; task list: `../research/02-ТЗ-Речка.md`.
+
+- Work on branch `dictovka`. Answer the user in Russian.
+- Never change the bundle id `ru.yurikashin.dictovka` or the signing identity "Dictovka Local Signing" (macOS permissions are tied to them).
+- `node_modules` and `src-tauri/target` are symlinks to `*.nosync` folders (iCloud). Keep them.
+- Build the macOS app only with `собрать-dmg.command` (build → sign → dmg → install → launch).
+- Rechka code: `src-tauri/src/rechka.rs` (snippets, spoken send, per-app styles), `OutputContext` in `actions.rs`, Rechka settings + migration in `settings.rs`, commands in `shortcut/mod.rs`, `src/bindings.ts` is edited by hand to match, UI in `src/components/settings/{Snippets,RechkaToggles}.tsx`.
+- Do not reverse engineer Aqua Voice / Wispr Flow (their terms forbid it); do not copy GPL code (VoiceInk).
+- UI strings: add to `ru` and `en`, plus the English text in the other locales so `bun scripts/check-translations.ts` passes.
+
+The rest of this file is Handy's upstream guidance.
+
 ## Development Commands
 
 **Prerequisites:**
