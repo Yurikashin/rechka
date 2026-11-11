@@ -444,6 +444,10 @@ pub struct AppSettings {
     /// applied to a settings store inherited from an earlier build.
     #[serde(default)]
     pub rechka_defaults_applied: bool,
+    /// Rechka: which set of starter defaults (dictionary…) a store has seen,
+    /// so each set is offered once and stays deleted if the user removes it.
+    #[serde(default)]
+    pub rechka_defaults_version: u32,
     #[serde(default = "default_show_whats_new_on_update")]
     pub show_whats_new_on_update: bool,
     /// The app version whose What's New the user has already seen. Fresh installs
@@ -614,6 +618,40 @@ const CURRENT_SETTINGS_SCHEMA_VERSION: u32 = 2;
 
 fn default_settings_schema_version() -> u32 {
     CURRENT_SETTINGS_SCHEMA_VERSION
+}
+
+/// Rechka: the current starter-defaults set (see `rechka_defaults_version`).
+pub const RECHKA_DEFAULTS_VERSION: u32 = 2;
+
+/// Rechka: a starter dictionary of distinctive Latin product names, so the
+/// recognizer's near-misses ("Git hub", "Chat GPT") snap to the right spelling.
+/// Plain English words (slack, zoom, cursor, word…) are deliberately absent.
+pub fn default_custom_words() -> Vec<String> {
+    [
+        "GitHub",
+        "GitLab",
+        "ChatGPT",
+        "OpenAI",
+        "Anthropic",
+        "YouTube",
+        "WhatsApp",
+        "Telegram",
+        "iPhone",
+        "iPad",
+        "MacBook",
+        "macOS",
+        "iCloud",
+        "JavaScript",
+        "TypeScript",
+        "PowerPoint",
+        "Gmail",
+        "Figma",
+        "Notion",
+        "Docker",
+    ]
+    .iter()
+    .map(|w| w.to_string())
+    .collect()
 }
 
 fn default_true() -> bool {
@@ -1073,6 +1111,7 @@ pub fn get_default_settings() -> AppSettings {
         autostart_enabled: default_autostart_enabled(),
         update_checks_enabled: default_update_checks_enabled(),
         rechka_defaults_applied: true,
+        rechka_defaults_version: RECHKA_DEFAULTS_VERSION,
         show_whats_new_on_update: default_show_whats_new_on_update(),
         whats_new_last_seen_version: default_whats_new_last_seen_version(),
         selected_model: "".to_string(),
@@ -1088,7 +1127,7 @@ pub fn get_default_settings() -> AppSettings {
         overlay_position: default_overlay_position(),
         debug_mode: false,
         log_level: default_log_level(),
-        custom_words: Vec::new(),
+        custom_words: default_custom_words(),
         snippets: Vec::new(),
         latin_terms_enabled: true,
         replacements: Vec::new(),
@@ -1291,6 +1330,22 @@ fn apply_settings_migrations(
             settings.post_process_prompts.push(prompt);
             updated = true;
         }
+    }
+
+    // Rechka starter dictionary, offered once (version 2): merged with the
+    // user's own words, never re-added after they delete an entry.
+    if settings.rechka_defaults_version < 2 {
+        for word in default_custom_words() {
+            if !settings
+                .custom_words
+                .iter()
+                .any(|w| w.eq_ignore_ascii_case(&word))
+            {
+                settings.custom_words.push(word);
+            }
+        }
+        settings.rechka_defaults_version = RECHKA_DEFAULTS_VERSION;
+        updated = true;
     }
 
     if settings_value.get("rechka_defaults_applied").is_none() || !settings.rechka_defaults_applied
@@ -2089,7 +2144,8 @@ mod tests {
             "chinese_script": "as_transcribed",
             "transcribe_accelerator": "gpu",
             "transcribe_gpu_device": settings.transcribe_gpu_device,
-            "rechka_defaults_applied": true
+            "rechka_defaults_applied": true,
+            "rechka_defaults_version": RECHKA_DEFAULTS_VERSION
         });
 
         assert!(!apply_settings_migrations(&mut settings, &raw));
@@ -2189,5 +2245,59 @@ mod tests {
         assert!(settings.voice_send_enabled);
         assert!(settings.app_styles_enabled);
         assert!(settings.snippets.is_empty());
+    }
+
+    #[test]
+    fn starter_dictionary_is_merged_once() {
+        let raw = serde_json::json!({ "custom_words": ["Краски детства", "github"], "rechka_defaults_applied": true });
+        let mut settings: AppSettings = serde_json::from_value(raw.clone()).unwrap();
+        assert!(apply_settings_migrations(&mut settings, &raw));
+        assert!(settings
+            .custom_words
+            .contains(&"Краски детства".to_string()));
+        assert_eq!(
+            settings
+                .custom_words
+                .iter()
+                .filter(|w| w.eq_ignore_ascii_case("github"))
+                .count(),
+            1
+        );
+        assert!(settings.custom_words.contains(&"ChatGPT".to_string()));
+        assert_eq!(settings.rechka_defaults_version, RECHKA_DEFAULTS_VERSION);
+
+        // The user removed a word later: it is not added back.
+        settings.custom_words.retain(|w| w != "ChatGPT");
+        let raw2 = serde_json::to_value(&settings).unwrap();
+        apply_settings_migrations(&mut settings, &raw2);
+        assert!(!settings.custom_words.contains(&"ChatGPT".to_string()));
+    }
+
+    #[test]
+    fn starter_dictionary_leaves_plain_text_alone() {
+        let words = default_custom_words();
+        for text in [
+            "Please send me the quarterly report by Friday, thanks.",
+            "Завтра в десять утра созвон по проекту.",
+            "The code compiles, ship it to production.",
+        ] {
+            assert_eq!(
+                crate::audio_toolkit::text::apply_custom_words(
+                    text,
+                    &words,
+                    default_word_correction_threshold()
+                ),
+                text,
+                "starter words must not rewrite ordinary speech"
+            );
+        }
+        assert_eq!(
+            crate::audio_toolkit::text::apply_custom_words(
+                "push it to Github",
+                &words,
+                default_word_correction_threshold()
+            ),
+            "push it to GitHub"
+        );
     }
 }
