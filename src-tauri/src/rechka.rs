@@ -141,9 +141,44 @@ static PLACE_NAME_PATTERNS: Lazy<Vec<(Regex, &'static str)>> = Lazy::new(|| {
         .collect()
 });
 
+/// "филиал Тушина" / "финал Путилково" / "филиал тушено": next to the word
+/// "филиал" (or its common mishearing "финал") a near-miss is the place name.
+/// Outside this context "Тушина" (surname) and "тушено" (stewed) stay as is.
+static BRANCH_CONTEXT: Lazy<Regex> = Lazy::new(|| {
+    Regex::new(r"(?i)\b(финал|филиал)(а|е|ы|ов|ом)?(\s+)(путилков\w*|тушин\w*|тушен\w*|химк\w*)\b")
+        .expect("valid branch pattern")
+});
+
+fn fix_branch_context(text: &str) -> String {
+    BRANCH_CONTEXT
+        .replace_all(text, |caps: &regex::Captures| {
+            let word = &caps[1];
+            let branch = if word.starts_with(|c: char| c.is_uppercase()) {
+                "Филиал"
+            } else {
+                "филиал"
+            };
+            let ending = caps.get(2).map_or("", |m| m.as_str());
+            let place = caps[4].to_lowercase();
+            let fixed = if place.starts_with("путилков") {
+                "Путилково".to_string()
+            } else if place.starts_with("тушин") || place.starts_with("тушен") {
+                "Тушино".to_string()
+            } else {
+                let mut chars = place.chars();
+                match chars.next() {
+                    Some(first) => first.to_uppercase().chain(chars).collect(),
+                    None => String::new(),
+                }
+            };
+            format!("{branch}{ending}{}{fixed}", &caps[3])
+        })
+        .into_owned()
+}
+
 /// Fixes spelling and capitalization of known place names.
 pub fn apply_place_names(text: &str) -> String {
-    let mut out = text.to_string();
+    let mut out = fix_branch_context(text);
     for (regex, fixed) in PLACE_NAME_PATTERNS.iter() {
         if regex.is_match(&out) {
             out = regex.replace_all(&out, *fixed).into_owned();
@@ -420,6 +455,12 @@ mod tests {
             "Путилково Тушино Химки, в Химках"
         );
         assert_eq!(apply_place_names("Анна Тушина"), "Анна Тушина");
+        assert_eq!(
+            apply_place_names("Финал Путилково. Филиал Тушина филиал Химки. Правильно тушено."),
+            "Филиал Путилково. Филиал Тушино филиал Химки. Правильно тушено."
+        );
+        assert_eq!(apply_place_names("в филиале тушено"), "в филиале Тушино");
+        assert_eq!(apply_place_names("финал чемпионата"), "финал чемпионата");
         assert_eq!(
             apply_latin_terms("файл на Google Драйв, спроси в чат GPT"),
             "файл на Google Drive, спроси в ChatGPT"
