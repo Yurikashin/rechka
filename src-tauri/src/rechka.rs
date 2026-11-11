@@ -40,13 +40,13 @@ const NOUN_ENDINGS: &str = "(?:а|у|ом|е|ы|ов|ам|ами|ах|ой|ю|я
 /// declines (takes [`NOUN_ENDINGS`]). Order matters: longer names first.
 /// Ambiguous everyday words (кодекс, курсор, питон, хром, мак) are left out.
 const LATIN_TERMS: &[(&str, &str)] = &[
-    (r"гугл\s?хром+", "Google Chrome"),
-    (r"гугл\s?док(?:с|и)", "Google Docs"),
-    (r"гугл\s?мит+", "Google Meet"),
-    (r"гугл\s?диск+", "Google Drive"),
+    (r"(?:гугл|google)\s?хром+", "Google Chrome"),
+    (r"(?:гугл|google)\s?док(?:с|и|ах|ов)", "Google Docs"),
+    (r"(?:гугл|google)\s?мит+", "Google Meet"),
+    (r"(?:гугл|google)\s?(?:диск|драйв)+", "Google Drive"),
     (r"(?:джи|г)\s?ме[йи]л+", "Gmail"),
     (r"(?:и|е)[-\s]?ме[йи]л+", "email"),
-    (r"(?:эпп?|апп?)\s?стор+", "App Store"),
+    (r"(?:эпп?|апп?|app)\s?стор+", "App Store"),
     (r"(?:гит|гет)\s?(?:хаб|хап)+", "GitHub"),
     (r"гит\s?лаб+", "GitLab"),
     (r"сафари", "Safari"),
@@ -70,7 +70,7 @@ const LATIN_TERMS: &[(&str, &str)] = &[
     (r"[эе]ксел(?:ь|е|я|ю|ем)", "Excel"),
     (r"ворд+", "Word"),
     (r"па(?:уэ|ве)р\s?поинт+", "PowerPoint"),
-    (r"чат\s?(?:гпт|джи\s?пи\s?ти)", "ChatGPT"),
+    (r"(?:чат|chat)[-\s]?(?:гпт|gpt|джи\s?пи\s?ти)", "ChatGPT"),
     (r"оупен\s?эй\s?ай|опен\s?эй\s?ай|опенаи", "OpenAI"),
     (r"клод+", "Claude"),
     (r"антропик+", "Anthropic"),
@@ -375,6 +375,14 @@ mod tests {
             "Открой Safari, зайди в GitHub и проверь почту в Apple Mail."
         );
         assert_eq!(apply_latin_terms("Найди в Гугле"), "Найди в Google");
+        assert_eq!(
+            apply_latin_terms("файл на Google Драйв, спроси в чат GPT"),
+            "файл на Google Drive, спроси в ChatGPT"
+        );
+        assert_eq!(
+            apply_latin_terms("Гугл драйве и Чат GPT"),
+            "Google Drive и ChatGPT"
+        );
         assert_eq!(
             apply_latin_terms("гугл докс и гугл мит"),
             "Google Docs и Google Meet"
