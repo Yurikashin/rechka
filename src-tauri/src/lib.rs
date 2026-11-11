@@ -733,6 +733,8 @@ pub fn run(cli_args: CliArgs) {
             shortcut::set_post_process_selected_prompt,
             shortcut::update_custom_words,
             shortcut::update_snippets,
+            shortcut::update_replacements,
+            shortcut::change_latin_terms_enabled_setting,
             shortcut::change_voice_send_enabled_setting,
             shortcut::change_app_styles_enabled_setting,
             shortcut::suspend_all_bindings,

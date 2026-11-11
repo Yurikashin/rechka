@@ -918,6 +918,20 @@
         "remove": "Remove snippet “{{trigger}}”",
         "removeShort": "Remove",
         "duplicate": "Snippet “{{trigger}}” already exists"
+      },
+      "latinTerms": {
+        "label": "Brand names in Latin",
+        "description": "Safari, GitHub, Apple, Mail, Google, Telegram, Excel, ChatGPT and other well-known names are written in English in any Russian case: «в Гугле» → «в Google». Ordinary words are left alone."
+      },
+      "replacements": {
+        "title": "Replacements",
+        "description": "A word or phrase is always replaced with your version, e.g. «гит пуш» → “git push” or a name in its proper spelling.",
+        "triggerPlaceholder": "Replace",
+        "textPlaceholder": "With",
+        "add": "Add",
+        "remove": "Remove replacement “{{trigger}}”",
+        "removeShort": "Remove",
+        "duplicate": "A replacement for “{{trigger}}” already exists"
       }
     }
   },

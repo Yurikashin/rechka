@@ -11,6 +11,7 @@ import type {
   VadBackend,
   LanguageDetectionMode,
   Snippet,
+  Replacement,
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { notify } from "@/stores/noticeStore";
@@ -146,6 +147,9 @@ const settingUpdaters: {
   debug_mode: (value) => commands.changeDebugModeSetting(value as boolean),
   custom_words: (value) => commands.updateCustomWords(value as string[]),
   snippets: (value) => commands.updateSnippets(value as Snippet[]),
+  replacements: (value) => commands.updateReplacements(value as Replacement[]),
+  latin_terms_enabled: (value) =>
+    commands.changeLatinTermsEnabledSetting(value as boolean),
   voice_send_enabled: (value) =>
     commands.changeVoiceSendEnabledSetting(value as boolean),
   app_styles_enabled: (value) =>

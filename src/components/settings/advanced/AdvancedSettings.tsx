@@ -4,7 +4,12 @@ import { ShowOverlay } from "../ShowOverlay";
 import { ModelUnloadTimeoutSetting } from "../ModelUnloadTimeout";
 import { CustomWords } from "../CustomWords";
 import { Snippets } from "../Snippets";
-import { VoiceSendToggle, AppStylesToggle } from "../RechkaToggles";
+import { Replacements } from "../Replacements";
+import {
+  VoiceSendToggle,
+  AppStylesToggle,
+  LatinTermsToggle,
+} from "../RechkaToggles";
 import { SettingsGroup } from "../../ui/SettingsGroup";
 import { StartHidden } from "../StartHidden";
 import { AutostartToggle } from "../AutostartToggle";
@@ -61,6 +66,8 @@ export const AdvancedSettings: React.FC = () => {
       </SettingsGroup>
 
       <SettingsGroup title={t("settings.rechka.group")}>
+        <LatinTermsToggle descriptionMode="tooltip" grouped={true} />
+        <Replacements descriptionMode="tooltip" grouped />
         <AppStylesToggle descriptionMode="tooltip" grouped={true} />
         <VoiceSendToggle descriptionMode="tooltip" grouped={true} />
         <Snippets descriptionMode="tooltip" grouped />

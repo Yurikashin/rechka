@@ -929,6 +929,30 @@ pub fn update_snippets(app: AppHandle, snippets: Vec<settings::Snippet>) -> Resu
 
 #[tauri::command]
 #[specta::specta]
+pub fn update_replacements(
+    app: AppHandle,
+    replacements: Vec<settings::Replacement>,
+) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.replacements = replacements
+        .into_iter()
+        .filter(|r| !r.from.trim().is_empty())
+        .collect();
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
+pub fn change_latin_terms_enabled_setting(app: AppHandle, enabled: bool) -> Result<(), String> {
+    let mut settings = settings::get_settings(&app);
+    settings.latin_terms_enabled = enabled;
+    settings::write_settings(&app, settings);
+    Ok(())
+}
+
+#[tauri::command]
+#[specta::specta]
 pub fn change_voice_send_enabled_setting(app: AppHandle, enabled: bool) -> Result<(), String> {
     let mut settings = settings::get_settings(&app);
     settings.voice_send_enabled = enabled;

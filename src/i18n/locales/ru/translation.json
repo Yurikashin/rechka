@@ -918,6 +918,20 @@
         "remove": "Удалить сниппет «{{trigger}}»",
         "removeShort": "Удалить",
         "duplicate": "Сниппет «{{trigger}}» уже есть"
+      },
+      "latinTerms": {
+        "label": "Названия латиницей",
+        "description": "Safari, GitHub, Apple, Mail, Google, Telegram, Excel, ChatGPT и другие известные названия пишутся по-английски, в любом падеже: «в Гугле» → «в Google». Обычные слова вроде «кодекс» и «курсор» не трогаются."
+      },
+      "replacements": {
+        "title": "Замены",
+        "description": "Слово или фраза всегда заменяется на ваш вариант, например «гит пуш» → «git push» или имя в нужном написании.",
+        "triggerPlaceholder": "Что заменить",
+        "textPlaceholder": "На что",
+        "add": "Добавить",
+        "remove": "Удалить замену «{{trigger}}»",
+        "removeShort": "Удалить",
+        "duplicate": "Замена для «{{trigger}}» уже есть"
       }
     }
   },

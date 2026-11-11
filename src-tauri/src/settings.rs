@@ -87,6 +87,13 @@ pub struct ShortcutBinding {
     pub current_binding: String,
 }
 
+/// Rechka: a whole-word replacement applied to every dictation.
+#[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Type)]
+pub struct Replacement {
+    pub from: String,
+    pub to: String,
+}
+
 /// Rechka: a spoken trigger phrase that expands into saved text.
 #[derive(Serialize, Deserialize, Debug, Clone, PartialEq, Eq, Type)]
 pub struct Snippet {
@@ -480,6 +487,12 @@ pub struct AppSettings {
     /// Rechka: whole-phrase voice shortcuts.
     #[serde(default)]
     pub snippets: Vec<Snippet>,
+    /// Rechka: write known brand names (Safari, GitHub, Google…) in Latin.
+    #[serde(default = "default_true")]
+    pub latin_terms_enabled: bool,
+    /// Rechka: the user's whole-word replacements.
+    #[serde(default)]
+    pub replacements: Vec<Replacement>,
     /// Rechka: "отправить" / "send it" at the end submits after pasting.
     #[serde(default = "default_true")]
     pub voice_send_enabled: bool,
@@ -1077,6 +1090,8 @@ pub fn get_default_settings() -> AppSettings {
         log_level: default_log_level(),
         custom_words: Vec::new(),
         snippets: Vec::new(),
+        latin_terms_enabled: true,
+        replacements: Vec::new(),
         voice_send_enabled: true,
         app_styles_enabled: true,
         model_unload_timeout: ModelUnloadTimeout::default(),

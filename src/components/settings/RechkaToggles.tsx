@@ -47,3 +47,23 @@ export const AppStylesToggle: React.FC<ToggleProps> = React.memo(
     );
   },
 );
+
+/** Rechka: write known brand names (Safari, GitHub, Google…) in Latin. */
+export const LatinTermsToggle: React.FC<ToggleProps> = React.memo(
+  ({ descriptionMode = "tooltip", grouped = false }) => {
+    const { t } = useTranslation();
+    const { getSetting, updateSetting, isUpdating } = useSettings();
+    const enabled = getSetting("latin_terms_enabled") ?? true;
+    return (
+      <ToggleSwitch
+        checked={enabled}
+        onChange={(value) => updateSetting("latin_terms_enabled", value)}
+        isUpdating={isUpdating("latin_terms_enabled")}
+        label={t("settings.rechka.latinTerms.label")}
+        description={t("settings.rechka.latinTerms.description")}
+        descriptionMode={descriptionMode}
+        grouped={grouped}
+      />
+    );
+  },
+);

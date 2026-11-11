@@ -4,7 +4,9 @@
 //! Everything here is pure text logic except [`frontmost_bundle_id`], so the
 //! behavior is covered by unit tests on every platform.
 
-use crate::settings::Snippet;
+use crate::settings::{Replacement, Snippet};
+use once_cell::sync::Lazy;
+use regex::Regex;
 
 /// Lower-cases, folds `ё` into `е`, drops punctuation and collapses spaces, so
 /// a spoken phrase compares equal however the recognizer punctuated it.
@@ -28,6 +30,107 @@ pub fn match_snippet<'a>(text: &str, snippets: &'a [Snippet]) -> Option<&'a Snip
     snippets
         .iter()
         .find(|s| !s.text.is_empty() && normalize_phrase(&s.trigger) == spoken)
+}
+
+/// Russian case endings a brand name picks up in speech ("в Гугле", "Гугла").
+const NOUN_ENDINGS: &str = "(?:а|у|ом|е|ы|ов|ам|ами|ах|ой|ю|я|ем)?";
+
+/// Brand and product names the recognizer writes in Cyrillic, with the Latin
+/// spelling to restore. Each pattern is the Cyrillic stem; `+` marks that it
+/// declines (takes [`NOUN_ENDINGS`]). Order matters: longer names first.
+/// Ambiguous everyday words (кодекс, курсор, питон, хром, мак) are left out.
+const LATIN_TERMS: &[(&str, &str)] = &[
+    (r"гугл\s?хром+", "Google Chrome"),
+    (r"гугл\s?док(?:с|и)", "Google Docs"),
+    (r"гугл\s?мит+", "Google Meet"),
+    (r"гугл\s?диск+", "Google Drive"),
+    (r"(?:джи|г)\s?ме[йи]л+", "Gmail"),
+    (r"(?:и|е)[-\s]?ме[йи]л+", "email"),
+    (r"(?:эпп?|апп?)\s?стор+", "App Store"),
+    (r"(?:гит|гет)\s?(?:хаб|хап)+", "GitHub"),
+    (r"гит\s?лаб+", "GitLab"),
+    (r"сафари", "Safari"),
+    (r"(?:эпп?л|эпол)+", "Apple"),
+    (r"м[еэ]йл+", "Mail"),
+    (r"гу(?:гл|гол)+", "Google"),
+    (r"ют(?:у|ю)б+", "YouTube"),
+    (r"телеграмм?+", "Telegram"),
+    (r"(?:ва|во)(?:тс|ц)апп?+", "WhatsApp"),
+    (r"зум+", "Zoom"),
+    (r"сл[аэ]к+", "Slack"),
+    (r"ноуш[е]?н+", "Notion"),
+    (r"фигм(?:а|ы|е|у|ой)", "Figma"),
+    (r"айфон+", "iPhone"),
+    (r"айпад+", "iPad"),
+    (r"макбук+", "MacBook"),
+    (r"айклауд+", "iCloud"),
+    (r"мак\s?ос", "macOS"),
+    (r"виндо(?:в|у)с", "Windows"),
+    (r"майкрософт+", "Microsoft"),
+    (r"[эе]ксел(?:ь|е|я|ю|ем)", "Excel"),
+    (r"ворд+", "Word"),
+    (r"па(?:уэ|ве)р\s?поинт+", "PowerPoint"),
+    (r"чат\s?(?:гпт|джи\s?пи\s?ти)", "ChatGPT"),
+    (r"оупен\s?эй\s?ай|опен\s?эй\s?ай|опенаи", "OpenAI"),
+    (r"клод+", "Claude"),
+    (r"антропик+", "Anthropic"),
+    (r"докер+", "Docker"),
+    (r"джава\s?скрипт+", "JavaScript"),
+    (r"тайп\s?скрипт+", "TypeScript"),
+    (r"пайтон+", "Python"),
+    (r"линукс+", "Linux"),
+    (r"инстаграм+", "Instagram"),
+    (r"фейсбук+", "Facebook"),
+    (r"тик\s?ток+", "TikTok"),
+    (r"спотифай", "Spotify"),
+    (r"дискорд+", "Discord"),
+    (r"джир(?:а|ы|е|у|ой)", "Jira"),
+    (r"трелло", "Trello"),
+    (r"дропбокс+", "Dropbox"),
+    (r"вай[-\s]?фай", "Wi-Fi"),
+    (r"блюту(?:с|з)", "Bluetooth"),
+];
+
+static LATIN_TERM_PATTERNS: Lazy<Vec<(Regex, &'static str)>> = Lazy::new(|| {
+    LATIN_TERMS
+        .iter()
+        .map(|(pattern, latin)| {
+            let body = match pattern.strip_suffix('+') {
+                Some(stem) => format!("(?:{stem}){NOUN_ENDINGS}"),
+                None => format!("(?:{pattern})"),
+            };
+            let regex = Regex::new(&format!(r"(?i)\b{body}\b")).expect("valid brand pattern");
+            (regex, *latin)
+        })
+        .collect()
+});
+
+/// Writes known brand and product names in Latin script: "в Гугле" -> "в Google".
+pub fn apply_latin_terms(text: &str) -> String {
+    let mut out = text.to_string();
+    for (regex, latin) in LATIN_TERM_PATTERNS.iter() {
+        if regex.is_match(&out) {
+            out = regex.replace_all(&out, *latin).into_owned();
+        }
+    }
+    out
+}
+
+/// The user's own whole-word replacements, case-insensitive, applied in order.
+pub fn apply_replacements(text: &str, replacements: &[Replacement]) -> String {
+    let mut out = text.to_string();
+    for r in replacements {
+        let from = r.from.trim();
+        if from.is_empty() {
+            continue;
+        }
+        let words: Vec<String> = from.split_whitespace().map(regex::escape).collect();
+        let pattern = format!(r"(?i)\b{}\b", words.join(r"\s+"));
+        if let Ok(regex) = Regex::new(&pattern) {
+            out = regex.replace_all(&out, regex::NoExpand(&r.to)).into_owned();
+        }
+    }
+    out
 }
 
 /// Spoken endings that mean "submit after pasting".
@@ -263,5 +366,51 @@ mod tests {
             "Добрый день."
         );
         assert_eq!(apply_local_style("Добрый день.", None), "Добрый день.");
+    }
+
+    #[test]
+    fn brand_names_are_written_in_latin() {
+        assert_eq!(
+            apply_latin_terms("Открой Сафари, зайди в Гетхап и проверь почту в Эпл Мэйл."),
+            "Открой Safari, зайди в GitHub и проверь почту в Apple Mail."
+        );
+        assert_eq!(apply_latin_terms("Найди в Гугле"), "Найди в Google");
+        assert_eq!(
+            apply_latin_terms("гугл докс и гугл мит"),
+            "Google Docs и Google Meet"
+        );
+        assert_eq!(apply_latin_terms("напиши в телеграме"), "напиши в Telegram");
+        assert_eq!(apply_latin_terms("пришли на имейл"), "пришли на email");
+        assert_eq!(apply_latin_terms("таблица в экселе"), "таблица в Excel");
+    }
+
+    #[test]
+    fn ordinary_words_are_not_touched() {
+        // A verb from a brand, everyday words that only look similar.
+        assert_eq!(apply_latin_terms("надо погуглить"), "надо погуглить");
+        assert_eq!(
+            apply_latin_terms("Гражданский кодекс и курсор"),
+            "Гражданский кодекс и курсор"
+        );
+        assert_eq!(apply_latin_terms("хромированный мак"), "хромированный мак");
+        assert_eq!(apply_latin_terms("слаква"), "слаква");
+    }
+
+    #[test]
+    fn user_replacements_match_whole_words() {
+        let r = vec![
+            Replacement {
+                from: "краски детства".into(),
+                to: "«Краски детства»".into(),
+            },
+            Replacement {
+                from: "ри".into(),
+                to: "RI".into(),
+            },
+        ];
+        assert_eq!(
+            apply_replacements("Садик Краски Детства, при этом ри", &r),
+            "Садик «Краски детства», при этом RI"
+        );
     }
 }

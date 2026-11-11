@@ -465,6 +465,13 @@ pub(crate) async fn process_transcription_output(
         }
     }
 
+    // Rechka: brand names in Latin and the user's replacements, before any
+    // LLM pass so the model sees the intended spelling.
+    if settings.latin_terms_enabled {
+        final_text = crate::rechka::apply_latin_terms(&final_text);
+    }
+    final_text = crate::rechka::apply_replacements(&final_text, &settings.replacements);
+
     let style = if settings.app_styles_enabled {
         ctx.style
     } else {
