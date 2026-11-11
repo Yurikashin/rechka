@@ -1,4 +1,4 @@
-/** Dictovka microphone glyph (replaces the Handy hand); follows the theme colour. */
+/** «Речка» microphone glyph (replaces the Handy hand); follows the theme colour. */
 const HandyHand = ({
   width,
   height,
@@ -18,7 +18,12 @@ const HandyHand = ({
   >
     <rect x="43" y="10" width="40" height="70" rx="20" className="fill-text" />
     <path d="M27 62a36 36 0 0 0 72 0" strokeWidth="9" strokeLinecap="round" />
-    <path d="M63 98v19M44 122h38" strokeWidth="9" strokeLinecap="round" />
+    <path d="M63 98v9" strokeWidth="9" strokeLinecap="round" />
+    <path
+      d="M30 124c5.5-4.4 11-4.4 16.5 0s11 4.4 16.5 0 11-4.4 16.5 0 11 4.4 16.5 0"
+      strokeWidth="8"
+      strokeLinecap="round"
+    />
   </svg>
 );
 

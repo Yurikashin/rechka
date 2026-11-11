@@ -25,7 +25,7 @@
     "customModelDescription": "לא נתמך באופן רשמי",
     "migration": {
       "title": "המודלים שלך צריכים עדכון",
-      "description": "Dictovka משתמש כעת בסוג חדש יותר של מודלים. יש להוריד את הגרסה החדשה כדי להמשיך לתמלל. גרסאות ישנות יוסרו.",
+      "description": "Rechka משתמש כעת בסוג חדש יותר של מודלים. יש להוריד את הגרסה החדשה כדי להמשיך לתמלל. גרסאות ישנות יוסרו.",
       "replaces": "מחליף את {{name}}",
       "oldFormat": "פורמט ישן",
       "failed": "ההורדה נכשלה",
@@ -62,11 +62,11 @@
     "permissions": {
       "microphone": {
         "name": "מיקרופון",
-        "why": "כדי ש-Dictovka ישמע אותך. השמע הופך לטקסט במחשב הזה ולא מועלה לשום מקום."
+        "why": "כדי ש-Rechka ישמע אותך. השמע הופך לטקסט במחשב הזה ולא מועלה לשום מקום."
       },
       "accessibility": {
         "name": "נגישות",
-        "why": "כדי שקיצור המקשים שלך יעבוד בכל אפליקציה, ו-Dictovka יוכל להקליד את הטקסט איפה שהסמן נמצא."
+        "why": "כדי שקיצור המקשים שלך יעבוד בכל אפליקציה, ו-Rechka יוכל להקליד את הטקסט איפה שהסמן נמצא."
       },
       "errors": {
         "checkFailed": "בדיקת ההרשאות נכשלה. נסה שוב.",
@@ -80,12 +80,12 @@
       "openSettings": "פתח הגדרות",
       "allowed": "מאושר",
       "waiting": "ממתין",
-      "turnOnMac": "הפעל את Dictovka בהגדרות המערכת ואז חזור לכאן.",
+      "turnOnMac": "הפעל את Rechka בהגדרות המערכת ואז חזור לכאן.",
       "turnOnWindows": "הפעל גישה למיקרופון ב-הגדרות Windows ואז חזור לכאן.",
       "hintBoth": "אשר את שתיהן כדי להמשיך",
       "hintMicrophone": "אשר את המיקרופון כדי להמשיך",
       "welcomeBack": "ברוך שובך. ממשיכים מהמקום שבו עצרת.",
-      "relaunch": "קיצור המקשים לא מגיב אחרי זה? <relaunch>הפעל מחדש את Dictovka</relaunch> ותחזור בדיוק לכאן."
+      "relaunch": "קיצור המקשים לא מגיב אחרי זה? <relaunch>הפעל מחדש את Rechka</relaunch> ותחזור בדיוק לכאן."
     },
     "shell": {
       "back": "חזרה",
@@ -96,11 +96,11 @@
       "title": "דבר במקום להקליד, בכל אפליקציה",
       "subtitle": "בחר את השפות שבהן תכתיב",
       "languagesLabel": "שפות",
-      "noMatch": "אין שפה שתואמת ל„{{query}}”. המודלים של Dictovka מכסים כ-100 שפות; עוד שפות זמינות בהגדרות.",
+      "noMatch": "אין שפה שתואמת ל„{{query}}”. המודלים של Rechka מכסים כ-100 שפות; עוד שפות זמינות בהגדרות.",
       "appLanguage": "שפת האפליקציה",
       "menusIn": "תפריטים ב<b>{{language}}</b>",
       "chinese": {
-        "question": "אתה מדבר {{languages}}. באילו תווים Dictovka צריך לכתוב?",
+        "question": "אתה מדבר {{languages}}. באילו תווים Rechka צריך לכתוב?",
         "label": "תווים סיניים",
         "zh-Hans": "מפושטת",
         "zh-Hant": "טייוואן",
@@ -170,7 +170,7 @@
     },
     "try": {
       "title": "בוא ננסה!",
-      "subtitle": "Dictovka בפינה, ילווה אותך בדרך",
+      "subtitle": "Rechka בפינה, ילווה אותך בדרך",
       "noteLabel": "פתק",
       "placeholder": "פתק חדש",
       "hold": "החזק את <keys/> ודבר.",
@@ -198,14 +198,14 @@
     },
     "done": {
       "title": "הכול מוכן",
-      "subMac": "Dictovka נמצא עכשיו בשורת התפריטים. החזק או הקש על <keys/> בכל אפליקציה כדי לדבר.",
-      "subTray": "Dictovka נמצא עכשיו במגש המערכת. החזק או הקש על <keys/> בכל אפליקציה כדי לדבר.",
+      "subMac": "Rechka נמצא עכשיו בשורת התפריטים. החזק או הקש על <keys/> בכל אפליקציה כדי לדבר.",
+      "subTray": "Rechka נמצא עכשיו במגש המערכת. החזק או הקש על <keys/> בכל אפליקציה כדי לדבר.",
       "hint": "אפשר לשנות את אלה אחר כך בהגדרות",
       "highFiveLabel": "כיף",
-      "atLogin": "הפעל את Dictovka כשאני נכנס למערכת",
+      "atLogin": "הפעל את Rechka כשאני נכנס למערכת",
       "finish": "סיום",
       "panel": {
-        "name": "Dictovka",
+        "name": "Rechka",
         "ready": "מוכן",
         "languages": "שפות",
         "model": "מודל דיבור",
@@ -330,7 +330,7 @@
     "general": {
       "title": "כללי",
       "shortcut": {
-        "title": "קיצורי מקשים של Dictovka",
+        "title": "קיצורי מקשים של Rechka",
         "description": "הגדר קיצורי מקשים כדי להפעיל הקלטה ותמלול דיבור",
         "loading": "טוען קיצורי מקשים...",
         "none": "לא הוגדרו קיצורי מקשים",
@@ -372,7 +372,7 @@
       },
       "preferredLanguages": {
         "title": "שפות מועדפות",
-        "description": "השפות שאתה מדבר. Dictovka משתמש בהן כדי להמליץ על מודלים.",
+        "description": "השפות שאתה מדבר. Rechka משתמש בהן כדי להמליץ על מודלים.",
         "noMatch": "אין שפה שתואמת ל„{{query}}”",
         "weak": "עדיין אין מודל שמזהה היטב את {{languages}}."
       },
@@ -399,17 +399,17 @@
         "fits": "עבור השפות שלך",
         "untested": "לא נבדקו"
       },
-      "untestedNote": "לא נבדקו עם Dictovka. ייתכן שהם איטיים יותר או שיעשו יותר טעויות.",
+      "untestedNote": "לא נבדקו עם Rechka. ייתכן שהם איטיים יותר או שיעשו יותר טעויות.",
       "untestedHidden_one": "עוד מודל {{count}} לא מותאם להכתבה. חפש כדי למצוא אותו.",
       "untestedHidden_other": "עוד {{count}} מודלים לא מותאמים להכתבה. חפש כדי למצוא אותם.",
-      "emptyYours": "עדיין אין מודלים. בחר אחד למטה: הוא יורד, ואז Dictovka משתמש בו.",
+      "emptyYours": "עדיין אין מודלים. בחר אחד למטה: הוא יורד, ואז Rechka משתמש בו.",
       "showMore": "הצג עוד {{count}}",
       "showFewer": "הצג פחות",
       "download": "הורד והשתמש",
       "downloadingThenUse": "{{percent}}% מתוך {{total}}, ואז עובר אליו",
       "loading": "טוען…",
       "deleteAsk": "למחוק את {{name}}? זה ישחרר {{size}}.",
-      "deleteAskActive": "למחוק את {{name}}? Dictovka לא יוכל לתמלל עד שתבחר מודל אחר.",
+      "deleteAskActive": "למחוק את {{name}}? Rechka לא יוכל לתמלל עד שתבחר מודל אחר.",
       "cancel": "ביטול",
       "deleteModel": "מחק את {{name}}",
       "cancelDownload": "הפסק להוריד את {{name}}",
@@ -423,14 +423,14 @@
         "marks": "? עדיין לא נמדד. — לא שומע את השפה הזו."
       },
       "retiredNotice": {
-        "title": "מודלים ישנים כבר לא עובדים עם Dictovka",
+        "title": "מודלים ישנים כבר לא עובדים עם Rechka",
         "description": "הם תופסים {{size}} במחשב שלך.",
         "delete": "מחיקת מודלים",
         "deleteFailed": "לא ניתן היה למחוק חלק מהמודלים הישנים. פרטים נוספים ביומן."
       },
       "rescan": {
         "label": "סריקה מחדש",
-        "tooltip": "סריקה מחדש לאיתור מודלים שנוספו לתיקיית המודלים או למטמון של Hugging Face מחוץ ל-Dictovka"
+        "tooltip": "סריקה מחדש לאיתור מודלים שנוספו לתיקיית המודלים או למטמון של Hugging Face מחוץ ל-Rechka"
       }
     },
     "languages": {
@@ -500,11 +500,11 @@
       },
       "autostart": {
         "label": "הפעל עם עליית המערכת",
-        "description": "הפעל את Dictovka אוטומטית כשאתה מתחבר למחשב."
+        "description": "הפעל את Rechka אוטומטית כשאתה מתחבר למחשב."
       },
       "showTrayIcon": {
         "label": "הצג אייקון במגש",
-        "description": "הצג את האייקון של Dictovka במגש המערכת."
+        "description": "הצג את האייקון של Rechka במגש המערכת."
       },
       "overlay": {
         "style": {
@@ -741,7 +741,7 @@
       },
       "updateChecks": {
         "label": "בדוק עדכונים",
-        "description": "בדוק אוטומטית אם קיימות גרסאות חדשות של Dictovka",
+        "description": "בדוק אוטומטית אם קיימות גרסאות חדשות של Rechka",
         "lockedDescription": "מושבת על ידי תצורת המערכת (HANDY_DISABLE_UPDATER)"
       },
       "whatsNewPreview": {
@@ -847,7 +847,7 @@
       },
       "keyboardDiagnostic": {
         "title": "אבחון מקלדת",
-        "description": "בודק אם אירועי מקלדת מגיעים ל-Dictovka. נרשם רק מספר האירועים — לעולם לא אילו מקשים הקשת.",
+        "description": "בודק אם אירועי מקלדת מגיעים ל-Rechka. נרשם רק מספר האירועים — לעולם לא אילו מקשים הקשת.",
         "run": "הרצת אבחון של 10 שניות",
         "running": "מאזין… הקש על קיצור המקשים שלך כמה פעמים (למשל Option+Space)",
         "secureInputLabel": "Secure Input",
@@ -861,7 +861,7 @@
         "mouse": "עכבר",
         "verdictBlocked": "Secure Input חוסם אירועי מקשים — קיצורים הכוללים מקש רגיל לא יוכלו לפעול עד שהבעיה תיפתר.",
         "verdictSuspicious": "הגיעו אירועים של מקשי החלפה אך לא אירועי מקשים — משהו מדכא מקשים למרות ש-Secure Input מדווח כמושבת. אנא דווח על כך ב-GitHub.",
-        "verdictOk": "אירועי מקשים מגיעים ל-Dictovka כרגיל.",
+        "verdictOk": "אירועי מקשים מגיעים ל-Rechka כרגיל.",
         "verdictNoEvents": "לא נקלטו אירועים — האם הקשת על מקשים במהלך הבדיקה?",
         "failed": "האבחון נכשל: {{error}}"
       }
@@ -870,15 +870,15 @@
       "title": "אודות",
       "version": {
         "title": "גרסה",
-        "description": "הגרסה הנוכחית של Dictovka"
+        "description": "הגרסה הנוכחית של Rechka"
       },
       "whatsNewUpdates": {
         "label": "הצג מה חדש",
-        "description": "הצג הערות גרסה לאחר עדכוני Dictovka"
+        "description": "הצג הערות גרסה לאחר עדכוני Rechka"
       },
       "appDataDirectory": {
         "title": "תיקיית נתוני אפליקציה",
-        "description": "המיקום שבו Dictovka שומר את הנתונים שלו"
+        "description": "המיקום שבו Rechka שומר את הנתונים שלו"
       },
       "sourceCode": {
         "title": "קוד מקור",
@@ -887,7 +887,7 @@
       },
       "supportDevelopment": {
         "title": "תמיכה בפיתוח",
-        "description": "עזור לנו להמשיך לבנות את Dictovka",
+        "description": "עזור לנו להמשיך לבנות את Rechka",
         "button": "תרומה"
       },
       "acknowledgments": {
@@ -895,8 +895,29 @@
         "ggml": {
           "title": "ggml",
           "description": "הסקה מהירה לביצועים גבוהים עבור מודל זיהוי הדיבור Whisper של OpenAI",
-          "details": "Dictovka משתמש ב-ggml לתמלול מהיר ומקומי. תודה לעבודה המדהימה של Georgi Gerganov וכל התורמים."
+          "details": "Rechka משתמש ב-ggml לתמלול מהיר ומקומי. תודה לעבודה המדהימה של Georgi Gerganov וכל התורמים."
         }
+      }
+    },
+    "rechka": {
+      "group": "Rechka",
+      "appStyles": {
+        "label": "Style per app",
+        "description": "Format text for where it goes: messengers short with no final period, mail in full sentences, code editors and terminals with commands and names in Latin script. With AI post-processing the style applies fully."
+      },
+      "voiceSend": {
+        "label": "Spoken “send it”",
+        "description": "Say “send it” (or “отправить”) at the end of a phrase to paste and submit it with the auto-submit key."
+      },
+      "snippets": {
+        "title": "Snippets",
+        "description": "A trigger phrase spoken on its own inserts saved text. For example: “my address” → your full address.",
+        "triggerPlaceholder": "Phrase, e.g. my address",
+        "textPlaceholder": "Text to insert",
+        "add": "Add",
+        "remove": "Remove snippet “{{trigger}}”",
+        "removeShort": "Remove",
+        "duplicate": "Snippet “{{trigger}}” already exists"
       }
     }
   },
@@ -916,7 +937,7 @@
     "portableUpdateBrowseButton": "פתח את GitHub Releases"
   },
   "whatsNew": {
-    "title": "חדש ב-Dictovka v{{version}}"
+    "title": "חדש ב-Rechka v{{version}}"
   },
   "common": {
     "playbackPosition": "מיקום ההשמעה",
@@ -941,7 +962,7 @@
     "noInputDeviceTitle": "לא נמצא מיקרופון",
     "noInputDevice": "לא זוהה התקן קלט שמע. חבר מיקרופון או אוזנייה ונסה שוב.",
     "recordingFailedTitle": "הפעלת ההקלטה נכשלה",
-    "modelLoadFailed": "Dictovka לא הצליח לטעון את המודל הזה. נסו שוב או בחרו מודל אחר.",
+    "modelLoadFailed": "Rechka לא הצליח לטעון את המודל הזה. נסו שוב או בחרו מודל אחר.",
     "modelLoadFailedTitle": "טעינת המודל נכשלה",
     "modelDownloadFailed": "ההורדה נכשלה",
     "pasteFailedTitle": "ההדבקה נכשלה",
@@ -962,11 +983,11 @@
   },
   "appLanguage": {
     "title": "שפת האפליקציה",
-    "description": "שנה את שפת הממשק של Dictovka"
+    "description": "שנה את שפת הממשק של Rechka"
   },
   "theme": {
     "title": "ערכת נושא של האפליקציה",
-    "description": "בחר אם Dictovka יעקוב אחר ערכת הנושא של המערכת או יישאר בהיר או כהה",
+    "description": "בחר אם Rechka יעקוב אחר ערכת הנושא של המערכת או יישאר בהיר או כהה",
     "options": {
       "system": "מערכת",
       "light": "בהיר",

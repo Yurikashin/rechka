@@ -770,6 +770,13 @@ fn paste_direct(
     })
 }
 
+/// Rechka: presses the configured submit key (spoken "send" command).
+pub fn send_submit_key(app_handle: &AppHandle) -> Result<(), String> {
+    let key = get_settings(app_handle).auto_submit_key;
+    std::thread::sleep(Duration::from_millis(50));
+    with_enigo(app_handle, move |enigo| send_return_key(enigo, key))
+}
+
 pub(crate) fn send_return_key(enigo: &mut Enigo, key_type: AutoSubmitKey) -> Result<(), String> {
     match key_type {
         AutoSubmitKey::Enter => {

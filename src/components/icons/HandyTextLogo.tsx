@@ -1,4 +1,7 @@
-/** Dictovka wordmark (replaces the Handy logo). */
+/** The product name drawn as the wordmark: a brand name, not translatable copy. */
+const BRAND_NAME = "Речка";
+
+/** «Речка» wordmark (replaces the Handy logo). */
 const HandyTextLogo = ({
   width,
   height,
@@ -17,7 +20,7 @@ const HandyTextLogo = ({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       role="img"
-      aria-label="Dictovka"
+      aria-label="Речка"
     >
       <text
         x="465"
@@ -25,11 +28,11 @@ const HandyTextLogo = ({
         textAnchor="middle"
         className="logo-primary"
         fontFamily="-apple-system, BlinkMacSystemFont, 'SF Pro Rounded', 'Helvetica Neue', sans-serif"
-        fontSize="210"
+        fontSize="230"
         fontWeight="700"
         letterSpacing="-4"
       >
-        Dictovka
+        {BRAND_NAME}
       </text>
     </svg>
   );

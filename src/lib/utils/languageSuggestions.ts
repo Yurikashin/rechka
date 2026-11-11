@@ -17,7 +17,7 @@ const locale = () => navigator.language || "en-US";
 
 export const isChinese = (code: string) => code === "zh" || code === "yue";
 
-/** Dictovka: Russian + English are preselected on every machine. */
+/** Rechka: Russian + English are preselected on every machine. */
 const DICTOVKA_LANGUAGES = ["ru", "en"];
 
 /** Likely spoken languages: Russian and English first, then any other system languages. */

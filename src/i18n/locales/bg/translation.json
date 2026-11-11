@@ -25,7 +25,7 @@
     "customModelDescription": "Не се поддържа официално",
     "migration": {
       "title": "Моделите ви се нуждаят от обновяване",
-      "description": "Dictovka вече използва по-нов вид модели. Изтеглете новата версия, за да продължите да транскрибирате. Старите версии ще бъдат премахнати.",
+      "description": "Rechka вече използва по-нов вид модели. Изтеглете новата версия, за да продължите да транскрибирате. Старите версии ще бъдат премахнати.",
       "replaces": "Заменя {{name}}",
       "oldFormat": "Стар формат",
       "failed": "Изтеглянето е неуспешно",
@@ -62,11 +62,11 @@
     "permissions": {
       "microphone": {
         "name": "Микрофон",
-        "why": "За да може Dictovka да ви чува. Звукът се превръща в текст на този компютър и никога не се качва никъде."
+        "why": "За да може Rechka да ви чува. Звукът се превръща в текст на този компютър и никога не се качва никъде."
       },
       "accessibility": {
         "name": "Достъпност",
-        "why": "За да работи бързият ви клавиш във всяко приложение и Dictovka да въвежда текста там, където е курсорът ви."
+        "why": "За да работи бързият ви клавиш във всяко приложение и Rechka да въвежда текста там, където е курсорът ви."
       },
       "errors": {
         "checkFailed": "Проверката на разрешенията не бе успешна. Опитайте отново.",
@@ -80,12 +80,12 @@
       "openSettings": "Отвори настройките",
       "allowed": "Разрешено",
       "waiting": "Изчакване",
-      "turnOnMac": "Включете Dictovka в Системни настройки, после се върнете тук.",
+      "turnOnMac": "Включете Rechka в Системни настройки, после се върнете тук.",
       "turnOnWindows": "Включете достъпа до микрофона в Настройки на Windows, после се върнете тук.",
       "hintBoth": "Разрешете и двете, за да продължите",
       "hintMicrophone": "Разрешете микрофона, за да продължите",
       "welcomeBack": "Добре дошли отново. Продължаваме от където спряхте.",
-      "relaunch": "Бързият клавиш не реагира след това? <relaunch>Рестартирайте Dictovka</relaunch> и ще се озовете точно тук."
+      "relaunch": "Бързият клавиш не реагира след това? <relaunch>Рестартирайте Rechka</relaunch> и ще се озовете точно тук."
     },
     "shell": {
       "back": "Назад",
@@ -96,11 +96,11 @@
       "title": "Говорете вместо да пишете, във всяко приложение",
       "subtitle": "Изберете езиците, на които ще диктувате",
       "languagesLabel": "Езици",
-      "noMatch": "Няма език, който съвпада с „{{query}}“. Моделите на Dictovka покриват около 100 езика; още има в настройките.",
+      "noMatch": "Няма език, който съвпада с „{{query}}“. Моделите на Rechka покриват около 100 езика; още има в настройките.",
       "appLanguage": "Език на приложението",
       "menusIn": "Менюта на <b>{{language}}</b>",
       "chinese": {
-        "question": "Говорите {{languages}}. Кои йероглифи да пише Dictovka?",
+        "question": "Говорите {{languages}}. Кои йероглифи да пише Rechka?",
         "label": "Китайски йероглифи",
         "zh-Hans": "Опростени",
         "zh-Hant": "Тайван",
@@ -170,7 +170,7 @@
     },
     "try": {
       "title": "Пробвайте!",
-      "subtitle": "Dictovka е в ъгъла, за да ви води стъпка по стъпка",
+      "subtitle": "Rechka е в ъгъла, за да ви води стъпка по стъпка",
       "noteLabel": "Бележка",
       "placeholder": "Нова бележка",
       "hold": "Задръжте <keys/> и говорете.",
@@ -198,14 +198,14 @@
     },
     "done": {
       "title": "Всичко е готово",
-      "subMac": "Dictovka вече е в лентата с менюта. Задръжте или натиснете <keys/> във всяко приложение, за да говорите.",
-      "subTray": "Dictovka вече е в системната област. Задръжте или натиснете <keys/> във всяко приложение, за да говорите.",
+      "subMac": "Rechka вече е в лентата с менюта. Задръжте или натиснете <keys/> във всяко приложение, за да говорите.",
+      "subTray": "Rechka вече е в системната област. Задръжте или натиснете <keys/> във всяко приложение, за да говорите.",
       "hint": "Можете да промените това по-късно в Настройки",
       "highFiveLabel": "Дай пет",
-      "atLogin": "Стартирай Dictovka при влизане в системата",
+      "atLogin": "Стартирай Rechka при влизане в системата",
       "finish": "Готово",
       "panel": {
-        "name": "Dictovka",
+        "name": "Rechka",
         "ready": "Готов",
         "languages": "Езици",
         "model": "Модел за реч",
@@ -330,7 +330,7 @@
     "general": {
       "title": "Общи",
       "shortcut": {
-        "title": "Бързи клавиши на Dictovka",
+        "title": "Бързи клавиши на Rechka",
         "description": "Настройте клавишни комбинации за стартиране на запис за реч към текст",
         "loading": "Зареждане на бързите клавиши...",
         "none": "Няма настроени бързи клавиши",
@@ -372,7 +372,7 @@
       },
       "preferredLanguages": {
         "title": "Предпочитани езици",
-        "description": "Езиците, на които говорите. Dictovka ги използва, за да препоръчва модели.",
+        "description": "Езиците, на които говорите. Rechka ги използва, за да препоръчва модели.",
         "noMatch": "Няма език, който съвпада с „{{query}}“",
         "weak": "Все още няма модел, който разпознава добре {{languages}}."
       },
@@ -399,17 +399,17 @@
         "fits": "За вашите езици",
         "untested": "Нетествани"
       },
-      "untestedNote": "Не са тествани с Dictovka. Може да са по-бавни или да правят повече грешки.",
+      "untestedNote": "Не са тествани с Rechka. Може да са по-бавни или да правят повече грешки.",
       "untestedHidden_one": "{{count}} друг модел не е пригоден за диктуване. Потърсете, за да го намерите.",
       "untestedHidden_other": "{{count}} други модела не са пригодени за диктуване. Потърсете, за да намерите някой.",
-      "emptyYours": "Още няма модели. Изберете един по-долу: изтегля се и Dictovka го използва.",
+      "emptyYours": "Още няма модели. Изберете един по-долу: изтегля се и Rechka го използва.",
       "showMore": "Покажи още {{count}}",
       "showFewer": "Покажи по-малко",
       "download": "Изтегли и използвай",
       "downloadingThenUse": "{{percent}}% от {{total}}, после превключва",
       "loading": "Зареждане…",
       "deleteAsk": "Да се изтрие ли {{name}}? Освобождава {{size}}.",
-      "deleteAskActive": "Да се изтрие ли {{name}}? Dictovka не може да транскрибира, докато не изберете друг.",
+      "deleteAskActive": "Да се изтрие ли {{name}}? Rechka не може да транскрибира, докато не изберете друг.",
       "cancel": "Отказ",
       "deleteModel": "Изтрий {{name}}",
       "cancelDownload": "Спри изтеглянето на {{name}}",
@@ -423,14 +423,14 @@
         "marks": "? още не е измерено. — не разбира този език."
       },
       "retiredNotice": {
-        "title": "Старите модели вече не работят с Dictovka",
+        "title": "Старите модели вече не работят с Rechka",
         "description": "Заемат {{size}} на компютъра ви.",
         "delete": "Изтрий моделите",
         "deleteFailed": "Някои стари модели не можаха да бъдат изтрити. Проверете журнала за подробности."
       },
       "rescan": {
         "label": "Сканиране отново",
-        "tooltip": "Сканиране отново за модели, добавени в папката с модели или кеша на Hugging Face извън Dictovka"
+        "tooltip": "Сканиране отново за модели, добавени в папката с модели или кеша на Hugging Face извън Rechka"
       }
     },
     "languages": {
@@ -500,11 +500,11 @@
       },
       "autostart": {
         "label": "Стартиране със системата",
-        "description": "Автоматично стартиране на Dictovka при влизане в профила ви."
+        "description": "Автоматично стартиране на Rechka при влизане в профила ви."
       },
       "showTrayIcon": {
         "label": "Икона в системната област",
-        "description": "Показване на иконата на Dictovka в системната област."
+        "description": "Показване на иконата на Rechka в системната област."
       },
       "overlay": {
         "style": {
@@ -741,7 +741,7 @@
       },
       "updateChecks": {
         "label": "Проверка за актуализации",
-        "description": "Автоматична проверка за нови версии на Dictovka",
+        "description": "Автоматична проверка за нови версии на Rechka",
         "lockedDescription": "Деактивирано от системната конфигурация (HANDY_DISABLE_UPDATER)"
       },
       "whatsNewPreview": {
@@ -847,7 +847,7 @@
       },
       "keyboardDiagnostic": {
         "title": "Диагностика на клавиатурата",
-        "description": "Проверява дали клавиатурните събития достигат до Dictovka. Записва се само броят на събитията — никога кои клавиши натискате.",
+        "description": "Проверява дали клавиатурните събития достигат до Rechka. Записва се само броят на събитията — никога кои клавиши натискате.",
         "run": "Стартиране на 10-секундна диагностика",
         "running": "Слушане… натиснете бързия си клавиш няколко пъти (напр. Option+Space)",
         "secureInputLabel": "Secure Input",
@@ -861,7 +861,7 @@
         "mouse": "Мишка",
         "verdictBlocked": "Secure Input блокира клавишните събития — бързите клавиши с обикновен клавиш не могат да работят, докато това не бъде решено.",
         "verdictSuspicious": "Пристигнаха събития от модификатори, но нито едно клавишно събитие — нещо потиска клавишите, въпреки че Secure Input се отчита като изключен. Моля, съобщете за това в GitHub.",
-        "verdictOk": "Клавишните събития достигат до Dictovka нормално.",
+        "verdictOk": "Клавишните събития достигат до Rechka нормално.",
         "verdictNoEvents": "Не са уловени събития — натиснахте ли някакви клавиши по време на теста?",
         "failed": "Диагностиката е неуспешна: {{error}}"
       }
@@ -870,15 +870,15 @@
       "title": "За приложението",
       "version": {
         "title": "Версия",
-        "description": "Текуща версия на Dictovka"
+        "description": "Текуща версия на Rechka"
       },
       "whatsNewUpdates": {
         "label": "Показвай новостите",
-        "description": "Показвай бележки към изданието след актуализации на Dictovka"
+        "description": "Показвай бележки към изданието след актуализации на Rechka"
       },
       "appDataDirectory": {
         "title": "Папка с данни на приложението",
-        "description": "Мястото, където Dictovka съхранява данните си"
+        "description": "Мястото, където Rechka съхранява данните си"
       },
       "sourceCode": {
         "title": "Изходен код",
@@ -887,7 +887,7 @@
       },
       "supportDevelopment": {
         "title": "Подкрепете разработката",
-        "description": "Помогнете ни да продължим да развиваме Dictovka",
+        "description": "Помогнете ни да продължим да развиваме Rechka",
         "button": "Дарение"
       },
       "acknowledgments": {
@@ -895,8 +895,29 @@
         "ggml": {
           "title": "ggml",
           "description": "Високопроизводително изпълнение на автоматичния модел за разпознаване на реч Whisper на OpenAI",
-          "details": "Dictovka използва ggml за бързо локално реч-към-текст. Благодарности на Georgi Gerganov и сътрудниците за отличната работа."
+          "details": "Rechka използва ggml за бързо локално реч-към-текст. Благодарности на Georgi Gerganov и сътрудниците за отличната работа."
         }
+      }
+    },
+    "rechka": {
+      "group": "Rechka",
+      "appStyles": {
+        "label": "Style per app",
+        "description": "Format text for where it goes: messengers short with no final period, mail in full sentences, code editors and terminals with commands and names in Latin script. With AI post-processing the style applies fully."
+      },
+      "voiceSend": {
+        "label": "Spoken “send it”",
+        "description": "Say “send it” (or “отправить”) at the end of a phrase to paste and submit it with the auto-submit key."
+      },
+      "snippets": {
+        "title": "Snippets",
+        "description": "A trigger phrase spoken on its own inserts saved text. For example: “my address” → your full address.",
+        "triggerPlaceholder": "Phrase, e.g. my address",
+        "textPlaceholder": "Text to insert",
+        "add": "Add",
+        "remove": "Remove snippet “{{trigger}}”",
+        "removeShort": "Remove",
+        "duplicate": "Snippet “{{trigger}}” already exists"
       }
     }
   },
@@ -916,7 +937,7 @@
     "portableUpdateBrowseButton": "Отвори GitHub Releases"
   },
   "whatsNew": {
-    "title": "Ново в Dictovka v{{version}}"
+    "title": "Ново в Rechka v{{version}}"
   },
   "common": {
     "playbackPosition": "Позиция на възпроизвеждане",
@@ -941,7 +962,7 @@
     "noInputDeviceTitle": "Не е намерен микрофон",
     "noInputDevice": "Не е открито аудио входно устройство. Свържете микрофон или слушалки и опитайте отново.",
     "recordingFailedTitle": "Записът не стартира",
-    "modelLoadFailed": "Dictovka не можа да зареди този модел. Опитайте отново или изберете друг.",
+    "modelLoadFailed": "Rechka не можа да зареди този модел. Опитайте отново или изберете друг.",
     "modelLoadFailedTitle": "Моделът не се зареди",
     "modelDownloadFailed": "Изтеглянето е неуспешно",
     "pasteFailedTitle": "Неуспешно поставяне на текст",
@@ -962,11 +983,11 @@
   },
   "appLanguage": {
     "title": "Език на приложението",
-    "description": "Промяна на езика на интерфейса на Dictovka"
+    "description": "Промяна на езика на интерфейса на Rechka"
   },
   "theme": {
     "title": "Тема на приложението",
-    "description": "Изберете дали Dictovka да следва системната тема, или да остане светла или тъмна",
+    "description": "Изберете дали Rechka да следва системната тема, или да остане светла или тъмна",
     "options": {
       "system": "Системна",
       "light": "Светла",

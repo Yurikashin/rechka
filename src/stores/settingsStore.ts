@@ -10,6 +10,7 @@ import type {
   ShortcutActivation,
   VadBackend,
   LanguageDetectionMode,
+  Snippet,
 } from "@/bindings";
 import { commands } from "@/bindings";
 import { notify } from "@/stores/noticeStore";
@@ -144,6 +145,11 @@ const settingUpdaters: {
     commands.changeOverlayPositionSetting(value as string),
   debug_mode: (value) => commands.changeDebugModeSetting(value as boolean),
   custom_words: (value) => commands.updateCustomWords(value as string[]),
+  snippets: (value) => commands.updateSnippets(value as Snippet[]),
+  voice_send_enabled: (value) =>
+    commands.changeVoiceSendEnabledSetting(value as boolean),
+  app_styles_enabled: (value) =>
+    commands.changeAppStylesEnabledSetting(value as boolean),
   word_correction_threshold: (value) =>
     commands.changeWordCorrectionThresholdSetting(value as number),
   paste_delay_ms: (value) =>

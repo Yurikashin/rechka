@@ -21,6 +21,7 @@ mod notices;
 mod overlay;
 mod paste_tx;
 pub mod portable;
+mod rechka;
 mod secure_input;
 mod settings;
 mod shortcut;
@@ -221,6 +222,12 @@ fn initialize_core_logic(app_handle: &AppHandle) {
     app_handle.manage(history_manager.clone());
     app_handle.manage(tray::TrayState::new());
     app_handle.manage(TranscriptionJobManager::new(app_handle));
+
+    // Rechka: load the selected model right away, so the first dictation after
+    // launch does not wait for it. Runs on its own thread inside the manager.
+    if !settings::get_settings(app_handle).selected_model.is_empty() {
+        transcription_manager.initiate_model_load(false);
+    }
 
     // Note: Shortcuts are NOT initialized here.
     // The frontend is responsible for calling the `initialize_shortcuts` command
@@ -725,6 +732,9 @@ pub fn run(cli_args: CliArgs) {
             shortcut::delete_post_process_prompt,
             shortcut::set_post_process_selected_prompt,
             shortcut::update_custom_words,
+            shortcut::update_snippets,
+            shortcut::change_voice_send_enabled_setting,
+            shortcut::change_app_styles_enabled_setting,
             shortcut::suspend_all_bindings,
             shortcut::resume_all_bindings,
             shortcut::change_mute_while_recording_setting,
@@ -998,7 +1008,7 @@ pub fn run(cli_args: CliArgs) {
             // for portable mode (redirects WebView2 cache to portable Data dir)
             let mut win_builder =
                 tauri::WebviewWindowBuilder::new(app, "main", tauri::WebviewUrl::App("/".into()))
-                    .title("Dictovka")
+                    .title("Речка")
                     .inner_size(utils::MAIN_WINDOW_SIZE.0, utils::MAIN_WINDOW_SIZE.1)
                     .min_inner_size(utils::MAIN_WINDOW_SIZE.0, utils::MAIN_WINDOW_SIZE.1)
                     .resizable(true)

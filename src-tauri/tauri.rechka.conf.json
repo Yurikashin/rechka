@@ -1,15 +1,18 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Dictovka",
+  "productName": "Rechka",
   "identifier": "ru.yurikashin.dictovka",
   "bundle": {
     "createUpdaterArtifacts": false,
-    "targets": ["app", "dmg"]
+    "targets": [
+      "app",
+      "dmg"
+    ]
   },
   "plugins": {
     "updater": {
       "endpoints": [
-        "https://github.com/Yurikashin/dictovka/releases/latest/download/latest.json"
+        "https://github.com/Yurikashin/rechka/releases/latest/download/latest.json"
       ]
     }
   }

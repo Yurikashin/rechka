@@ -1,4 +1,4 @@
-/** Dictovka mascot: the blue microphone app icon (replaces the Handy hand). */
+/** «Речка» mascot: the blue microphone-and-wave app icon (replaces the Handy hand). */
 const HandyMascot = ({ className = "" }: { className?: string }) => {
   return (
     <svg
@@ -14,10 +14,33 @@ const HandyMascot = ({ className = "" }: { className?: string }) => {
           <stop offset="1" stopColor="#1E5BE6" />
         </linearGradient>
       </defs>
-      <rect x="8" y="15" width="135" height="135" rx="32" fill="url(#dictovka-mascot-bg)" />
+      <rect
+        x="8"
+        y="15"
+        width="135"
+        height="135"
+        rx="32"
+        fill="url(#dictovka-mascot-bg)"
+      />
       <rect x="60" y="36" width="31" height="54" rx="15.5" fill="#fff" />
-      <path d="M45 72a30.5 30.5 0 0 0 61 0" stroke="#fff" strokeWidth="7" strokeLinecap="round" />
-      <path d="M75.5 103v15M61 125h29" stroke="#fff" strokeWidth="7" strokeLinecap="round" />
+      <path
+        d="M45 72a30.5 30.5 0 0 0 61 0"
+        stroke="#fff"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M75.5 103v8"
+        stroke="#fff"
+        strokeWidth="7"
+        strokeLinecap="round"
+      />
+      <path
+        d="M42 128c5.6-4.5 11.1-4.5 16.7 0s11.1 4.5 16.7 0 11.1-4.5 16.7 0 11.1 4.5 16.7 0"
+        stroke="#fff"
+        strokeWidth="6.5"
+        strokeLinecap="round"
+      />
     </svg>
   );
 };

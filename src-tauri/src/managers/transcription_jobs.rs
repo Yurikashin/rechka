@@ -330,6 +330,7 @@ impl TranscriptionJobManager {
             &self.app,
             &text,
             entry.post_process_requested,
+            crate::actions::OutputContext::default(),
         ));
         // Post-processing can take a while; a cancel during it still wins.
         if cancelled.load(Ordering::Acquire) {

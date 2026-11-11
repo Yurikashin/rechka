@@ -426,15 +426,56 @@ pub(crate) struct ProcessedTranscription {
     pub post_process_prompt: Option<String>,
     /// `final_text` is the bare transcript because post-processing failed.
     pub post_process_failed: bool,
+    /// Rechka: the phrase ended with a spoken send command.
+    pub send_now: bool,
+}
+
+/// Rechka: where the text goes and whether spoken commands apply.
+#[derive(Clone, Copy, Debug, Default)]
+pub(crate) struct OutputContext {
+    pub style: Option<crate::rechka::AppStyle>,
+    pub voice_commands: bool,
 }
 
 pub(crate) async fn process_transcription_output(
     app: &AppHandle,
     transcription: &str,
     post_process: bool,
+    ctx: OutputContext,
 ) -> ProcessedTranscription {
-    let settings = get_settings(app);
+    let mut settings = get_settings(app);
     let mut final_text = transcription.to_string();
+    let mut send_now = false;
+
+    if ctx.voice_commands {
+        if settings.voice_send_enabled {
+            let (kept, send) = crate::rechka::strip_send_command(&final_text);
+            final_text = kept;
+            send_now = send;
+        }
+        if let Some(snippet) = crate::rechka::match_snippet(&final_text, &settings.snippets) {
+            debug!("Snippet matched; skipping post-processing");
+            return ProcessedTranscription {
+                final_text: snippet.text.clone(),
+                post_processed_text: None,
+                post_process_prompt: None,
+                post_process_failed: false,
+                send_now,
+            };
+        }
+    }
+
+    let style = if settings.app_styles_enabled {
+        ctx.style
+    } else {
+        None
+    };
+    if let Some(style) = style {
+        let id = style.prompt_id();
+        if settings.post_process_prompts.iter().any(|p| p.id == id) {
+            settings.post_process_selected_prompt_id = Some(id.to_string());
+        }
+    }
     let mut post_processed_text: Option<String> = None;
     let mut post_process_prompt: Option<String> = None;
     let mut post_process_failed = false;
@@ -466,11 +507,14 @@ pub(crate) async fn process_transcription_output(
         }
     }
 
+    let final_text = crate::rechka::apply_local_style(&final_text, style);
+
     ProcessedTranscription {
         final_text,
         post_processed_text,
         post_process_prompt,
         post_process_failed,
+        send_now,
     }
 }
 
@@ -663,6 +707,12 @@ impl ShortcutAction for TranscribeAction {
 
         let stop_time = Instant::now();
         debug!("TranscribeAction::stop called for binding: {}", binding_id);
+        // Rechka: the text goes to the app in front now (the overlay never
+        // takes focus), so pick its style before anything async runs.
+        let output_ctx = OutputContext {
+            style: crate::rechka::current_app_style(),
+            voice_commands: true,
+        };
 
         let ah = app.clone();
         let rm = Arc::clone(&app.state::<Arc<AudioRecordingManager>>());
@@ -796,7 +846,12 @@ impl ShortcutAction for TranscribeAction {
                                 }
                             }
                             let Some(processed) = complete_unless_cancelled(
-                                process_transcription_output(&ah, &transcription, post_process),
+                                process_transcription_output(
+                                    &ah,
+                                    &transcription,
+                                    post_process,
+                                    output_ctx,
+                                ),
                                 || rm.was_cancelled_since(cancel_generation),
                             )
                             .await
@@ -830,6 +885,7 @@ impl ShortcutAction for TranscribeAction {
 
                             // The user's hook only changes what gets pasted;
                             // history above keeps the text as produced.
+                            let processed_send_now = processed.send_now;
                             let Some(final_text) = complete_unless_cancelled(
                                 crate::transcription_hook::apply(&ah, processed.final_text),
                                 || rm.was_cancelled_since(cancel_generation),
@@ -843,6 +899,16 @@ impl ShortcutAction for TranscribeAction {
                             };
 
                             if final_text.is_empty() {
+                                if processed_send_now {
+                                    // Only the send command was spoken.
+                                    let ah_send = ah.clone();
+                                    std::thread::spawn(move || {
+                                        if let Err(e) = crate::clipboard::send_submit_key(&ah_send)
+                                        {
+                                            warn!("Voice send failed: {e}");
+                                        }
+                                    });
+                                }
                                 utils::hide_recording_overlay(&ah);
                                 set_tray_state(&ah, TrayIconState::Idle);
                                 emit_transcription_complete(
@@ -880,6 +946,17 @@ impl ShortcutAction for TranscribeAction {
                                         let (outcome, notice) =
                                             match utils::paste(final_text, ah_clone.clone()) {
                                                 Ok(()) => {
+                                                    if processed_send_now
+                                                        && !get_settings(&ah_clone).auto_submit
+                                                    {
+                                                        if let Err(e) =
+                                                            crate::clipboard::send_submit_key(
+                                                                &ah_clone,
+                                                            )
+                                                        {
+                                                            warn!("Voice send failed: {e}");
+                                                        }
+                                                    }
                                                     debug!(
                                                         "Text pasted successfully in {:?}",
                                                         paste_time.elapsed()
