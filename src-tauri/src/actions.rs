@@ -470,6 +470,7 @@ pub(crate) async fn process_transcription_output(
     if settings.latin_terms_enabled {
         final_text = crate::rechka::apply_latin_terms(&final_text);
     }
+    final_text = crate::rechka::apply_place_names(&final_text);
     final_text = crate::rechka::apply_replacements(&final_text, &settings.replacements);
 
     let style = if settings.app_styles_enabled {

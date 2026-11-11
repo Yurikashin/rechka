@@ -116,6 +116,42 @@ pub fn apply_latin_terms(text: &str) -> String {
     out
 }
 
+/// Place names the recognizer writes in lower case or declines where the
+/// name is used in its fixed form ("филиал Тушину" -> "филиал Тушино").
+/// Each entry: pattern -> fixed spelling. Forms that are both correct and a
+/// common surname ("Тушина") are left alone.
+const PLACE_NAMES: &[(&str, &str)] = &[
+    (r"путилков(?:о|а|у|ом|е)", "Путилково"),
+    (r"тушин(?:о|у|ом)", "Тушино"),
+    (r"химки", "Химки"),
+    (r"химках", "Химках"),
+    (r"химок", "Химок"),
+    (r"химкам", "Химкам"),
+    (r"химками", "Химками"),
+];
+
+static PLACE_NAME_PATTERNS: Lazy<Vec<(Regex, &'static str)>> = Lazy::new(|| {
+    PLACE_NAMES
+        .iter()
+        .map(|(pattern, fixed)| {
+            let regex =
+                Regex::new(&format!(r"(?i)\b(?:{pattern})\b")).expect("valid place pattern");
+            (regex, *fixed)
+        })
+        .collect()
+});
+
+/// Fixes spelling and capitalization of known place names.
+pub fn apply_place_names(text: &str) -> String {
+    let mut out = text.to_string();
+    for (regex, fixed) in PLACE_NAME_PATTERNS.iter() {
+        if regex.is_match(&out) {
+            out = regex.replace_all(&out, *fixed).into_owned();
+        }
+    }
+    out
+}
+
 /// The user's own whole-word replacements, case-insensitive, applied in order.
 pub fn apply_replacements(text: &str, replacements: &[Replacement]) -> String {
     let mut out = text.to_string();
@@ -375,6 +411,15 @@ mod tests {
             "Открой Safari, зайди в GitHub и проверь почту в Apple Mail."
         );
         assert_eq!(apply_latin_terms("Найди в Гугле"), "Найди в Google");
+        assert_eq!(
+            apply_place_names("филиал Путилкова, филиал Тушину, филиал химки"),
+            "филиал Путилково, филиал Тушино, филиал Химки"
+        );
+        assert_eq!(
+            apply_place_names("Путилково тушино химки, в химках"),
+            "Путилково Тушино Химки, в Химках"
+        );
+        assert_eq!(apply_place_names("Анна Тушина"), "Анна Тушина");
         assert_eq!(
             apply_latin_terms("файл на Google Драйв, спроси в чат GPT"),
             "файл на Google Drive, спроси в ChatGPT"
