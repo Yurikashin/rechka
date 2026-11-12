@@ -25,6 +25,10 @@ fn build_match_key(word: &str) -> String {
 struct CustomWordMatchKey {
     word_index: usize,
     key: String,
+    /// Rechka: built-in starter words only fix spelling of the exact word
+    /// ("github" -> "GitHub"); fuzzy matching them rewrote ordinary English
+    /// ("motion" -> "Notion", "phone" -> "iPhone").
+    exact_only: bool,
 }
 
 fn build_custom_word_match_keys(word: &str, word_index: usize) -> Vec<CustomWordMatchKey> {
@@ -39,6 +43,7 @@ fn build_custom_word_match_keys(word: &str, word_index: usize) -> Vec<CustomWord
         keys.push(CustomWordMatchKey {
             word_index,
             key: primary_key.clone(),
+            exact_only: false,
         });
     }
 
@@ -48,6 +53,7 @@ fn build_custom_word_match_keys(word: &str, word_index: usize) -> Vec<CustomWord
             keys.push(CustomWordMatchKey {
                 word_index,
                 key: expanded_key,
+                exact_only: false,
             });
         }
     }
@@ -104,6 +110,9 @@ fn find_best_match<'a>(
 
         // Calculate Levenshtein distance (normalized by length)
         let levenshtein_dist = levenshtein(candidate, &custom_word_key.key);
+        if custom_word_key.exact_only && levenshtein_dist != 0 {
+            continue;
+        }
         let levenshtein_score = if max_len > 0.0 {
             levenshtein_dist as f64 / max_len
         } else {
@@ -158,6 +167,10 @@ pub fn apply_custom_words(text: &str, custom_words: &[String], threshold: f64) -
         .iter()
         .enumerate()
         .flat_map(|(index, word)| build_custom_word_match_keys(word, index))
+        .map(|mut key| {
+            key.exact_only = crate::settings::is_starter_custom_word(&custom_words[key.word_index]);
+            key
+        })
         .collect();
 
     let words: Vec<&str> = text.split_whitespace().collect();
@@ -799,10 +812,12 @@ mod tests {
 
     #[test]
     fn test_apply_custom_words_ngram_three_words() {
-        let text = "use Chat G P T for this";
-        let custom_words = vec!["ChatGPT".to_string()];
+        // Rechka: "ChatGPT" is a starter word (exact match only), so the
+        // n-gram mechanic is checked with a user word instead.
+        let text = "use Open G P T for this";
+        let custom_words = vec!["OpenGPT".to_string()];
         let result = apply_custom_words(text, &custom_words, 0.5);
-        assert!(result.contains("ChatGPT"));
+        assert!(result.contains("OpenGPT"));
     }
 
     #[test]
@@ -883,5 +898,30 @@ mod tests {
         let custom_words = vec!["你号".to_string()];
         let result = apply_custom_words(text, &custom_words, 1.0);
         assert_eq!(result, text);
+    }
+}
+
+#[cfg(test)]
+mod rechka_starter_words {
+    use super::apply_custom_words;
+
+    #[test]
+    fn starter_words_do_not_rewrite_ordinary_english() {
+        let words = crate::settings::default_custom_words();
+        for w in [
+            "motion", "nation", "lotion", "locker", "cloud", "phone", "macros",
+        ] {
+            assert_eq!(apply_custom_words(w, &words, 0.18), w, "{w}");
+        }
+        assert_eq!(
+            apply_custom_words("open github", &words, 0.18),
+            "open GitHub"
+        );
+    }
+
+    #[test]
+    fn user_words_still_match_fuzzily() {
+        let words = vec!["ChargeBee".to_string()];
+        assert_eq!(apply_custom_words("chargbee", &words, 0.5), "ChargeBee");
     }
 }

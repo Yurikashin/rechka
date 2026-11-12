@@ -50,8 +50,10 @@ const LATIN_TERMS: &[(&str, &str)] = &[
     (r"(?:гит|гет)\s?(?:хаб|хап)+", "GitHub"),
     (r"гит\s?лаб+", "GitLab"),
     (r"сафари", "Safari"),
+    (r"(?:эпп?л|эпол|apple)\s?м[еэ]йл+", "Apple Mail"),
     (r"(?:эпп?л|эпол)+", "Apple"),
-    (r"м[еэ]йл+", "Mail"),
+    // Alone, "мейл" means an email address or letter, not the Mail app.
+    (r"м[еэ]йл+", "email"),
     (r"гу(?:гл|гол)+", "Google"),
     (r"ют(?:у|ю)б+", "YouTube"),
     (r"телеграмм?+", "Telegram"),
@@ -214,11 +216,105 @@ const SEND_ENDINGS: &[&[&str]] = &[
 
 /// Removes a trailing spoken send command. Returns the text to paste (possibly
 /// empty when the whole phrase was the command) and whether to submit.
+/// A word right before the ending that makes it part of the sentence, not a
+/// command: "надо отправить", "не отправляй", "I will send it".
+const SEND_BLOCKERS: &[&str] = &[
+    "не",
+    "ни",
+    "надо",
+    "нужно",
+    "нужна",
+    "нужен",
+    "можно",
+    "нельзя",
+    "пора",
+    "стоит",
+    "чтобы",
+    "чтоб",
+    "хочу",
+    "хочешь",
+    "хотел",
+    "хотела",
+    "хотим",
+    "хотите",
+    "могу",
+    "может",
+    "можешь",
+    "можете",
+    "сможешь",
+    "сможете",
+    "смогу",
+    "буду",
+    "будем",
+    "будешь",
+    "будет",
+    "будут",
+    "забыл",
+    "забыла",
+    "забыли",
+    "успеть",
+    "успел",
+    "успела",
+    "решил",
+    "решила",
+    "должен",
+    "должна",
+    "должны",
+    "просил",
+    "просила",
+    "просили",
+    "попробуй",
+    "попробую",
+    "собираюсь",
+    "пришлось",
+    "как",
+    "что",
+    "куда",
+    "кому",
+    "когда",
+    "зачем",
+    "почему",
+    "где",
+    "ли",
+    "бы",
+    "to",
+    "will",
+    "can",
+    "cant",
+    "can't",
+    "could",
+    "should",
+    "must",
+    "would",
+    "not",
+    "dont",
+    "don't",
+    "didnt",
+    "didn't",
+    "never",
+    "ill",
+    "i'll",
+    "well",
+    "we'll",
+    "gonna",
+    "wanna",
+];
+
 pub fn strip_send_command(text: &str) -> (String, bool) {
     let words: Vec<&str> = text.split_whitespace().collect();
     for ending in SEND_ENDINGS {
         if words.len() < ending.len() {
             continue;
+        }
+        if let Some(prev) = words.len().checked_sub(ending.len() + 1).map(|i| words[i]) {
+            // "надо, отправить" with a pause mark is still a command.
+            let pause = prev.ends_with(|c: char| ",.;:!?—-".contains(c));
+            let prev_word = prev
+                .trim_matches(|c: char| !c.is_alphanumeric() && c != '\'')
+                .to_lowercase();
+            if !pause && SEND_BLOCKERS.contains(&prev_word.as_str()) {
+                continue;
+            }
         }
         let tail = &words[words.len() - ending.len()..];
         let matches = tail
@@ -446,6 +542,8 @@ mod tests {
             "Открой Safari, зайди в GitHub и проверь почту в Apple Mail."
         );
         assert_eq!(apply_latin_terms("Найди в Гугле"), "Найди в Google");
+        assert_eq!(apply_latin_terms("пришли на мейл"), "пришли на email");
+        assert_eq!(apply_latin_terms("в Эпл Мэйл"), "в Apple Mail");
         assert_eq!(
             apply_place_names("филиал Путилкова, филиал Тушину, филиал химки"),
             "филиал Путилково, филиал Тушино, филиал Химки"
@@ -505,6 +603,29 @@ mod tests {
         assert_eq!(
             apply_replacements("Садик Краски Детства, при этом ри", &r),
             "Садик «Краски детства», при этом RI"
+        );
+    }
+
+    #[test]
+    fn send_word_inside_a_sentence_is_not_a_command() {
+        for text in [
+            "Завтра надо отправить.",
+            "Не отправляй",
+            "Документы нужно отправить",
+            "I will send it",
+            "Чтобы отправить",
+        ] {
+            let (kept, send) = strip_send_command(text);
+            assert!(!send, "{text}");
+            assert_eq!(kept, text);
+        }
+        assert_eq!(
+            strip_send_command("Буду через десять минут, отправить"),
+            ("Буду через десять минут".to_string(), true)
+        );
+        assert_eq!(
+            strip_send_command("Это всё что надо, отправить"),
+            ("Это всё что надо".to_string(), true)
         );
     }
 }

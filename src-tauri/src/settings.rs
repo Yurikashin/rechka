@@ -626,6 +626,13 @@ pub const RECHKA_DEFAULTS_VERSION: u32 = 2;
 /// Rechka: a starter dictionary of distinctive Latin product names, so the
 /// recognizer's near-misses ("Git hub", "Chat GPT") snap to the right spelling.
 /// Plain English words (slack, zoom, cursor, word…) are deliberately absent.
+/// True for words of the built-in starter dictionary (case-insensitive).
+pub fn is_starter_custom_word(word: &str) -> bool {
+    default_custom_words()
+        .iter()
+        .any(|w| w.eq_ignore_ascii_case(word.trim()))
+}
+
 pub fn default_custom_words() -> Vec<String> {
     [
         "GitHub",
