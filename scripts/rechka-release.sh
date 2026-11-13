@@ -31,7 +31,7 @@ cp "$DMG" "$WORK/Rechka_aarch64.dmg"
 # .command внутри zip сохраняет право на запуск при пересылке (Telegram, почта).
 cp "install/Установить Речку.command" "$WORK/"
 chmod +x "$WORK/Установить Речку.command"
-(cd "$WORK" && ditto -c -k --sequesterRsrc --keepParent "Установить Речку.command" "Install-Rechka.zip")
+(cd "$WORK" && ditto -c -k --norsrc --noextattr "Установить Речку.command" "Install-Rechka.zip")
 
 NOTES="Речка ${VERSION}, сборка ${STAMP} (коммит ${COMMIT}). Mac на Apple Silicon (M1 и новее).
 
