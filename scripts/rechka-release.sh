@@ -22,7 +22,8 @@ gh auth status -h github.com >/dev/null 2>&1 || gh auth login -h github.com -p h
 VERSION="$(sed -n 's/.*"version": *"\([^"]*\)".*/\1/p' src-tauri/tauri.conf.json | head -1)"
 STAMP="$(date +%Y%m%d-%H%M)"
 TAG="v${VERSION}-${STAMP}"
-COMMIT="$(git rev-parse --short HEAD 2>/dev/null || echo "?")"
+# RECHKA_COMMIT задаёт обёртка на Mac (в папке сборки история git может отставать).
+COMMIT="${RECHKA_COMMIT:-$(git rev-parse --short HEAD 2>/dev/null || echo "?")}"
 
 WORK="$(mktemp -d)"
 trap 'rm -rf "$WORK"' EXIT
