@@ -44,6 +44,11 @@ const UpdateChecker: React.FC<UpdateCheckerProps> = ({ className = "" }) => {
 
   const upToDateTimeoutRef = useRef<ReturnType<typeof setTimeout>>();
   const isManualCheckRef = useRef(false);
+  // Rechka: the first automatic check after launch installs an update and
+  // relaunches right away; later periodic checks install it quietly so it
+  // starts with the next launch (no restart in the middle of dictation).
+  const isStartupCheckRef = useRef(true);
+  const quietlyInstalledRef = useRef(false);
   const downloadedBytesRef = useRef(0);
   const contentLengthRef = useRef(0);
 
@@ -62,6 +67,12 @@ const UpdateChecker: React.FC<UpdateCheckerProps> = ({ className = "" }) => {
     }
 
     checkForUpdates();
+    const periodicCheck = setInterval(
+      () => {
+        checkForUpdates();
+      },
+      6 * 60 * 60 * 1000,
+    );
 
     // Listen for update check events
     const updateUnlisten = listen("check-for-updates", () => {
@@ -72,17 +83,38 @@ const UpdateChecker: React.FC<UpdateCheckerProps> = ({ className = "" }) => {
       if (upToDateTimeoutRef.current) {
         clearTimeout(upToDateTimeoutRef.current);
       }
+      clearInterval(periodicCheck);
       updateUnlisten.then((fn) => fn());
     };
   }, [settingsLoaded, updateChecksEnabled]);
 
   // Update checking functions
   const checkForUpdates = async () => {
-    if (!updateChecksEnabled || isChecking) return;
+    if (!updateChecksEnabled || isChecking || quietlyInstalledRef.current)
+      return;
+
+    const isStartupCheck = isStartupCheckRef.current;
+    isStartupCheckRef.current = false;
 
     try {
       setIsChecking(true);
       const update = await check();
+
+      if (update && !isManualCheckRef.current) {
+        const portable = await commands.isPortable();
+        if (!portable) {
+          if (isStartupCheck) {
+            // Right after launch: install and restart into the new version.
+            void installUpdate();
+          } else {
+            // Mid-session: install now, take effect on the next launch.
+            await update.downloadAndInstall();
+            quietlyInstalledRef.current = true;
+            console.log("Update installed; it starts with the next launch");
+          }
+          return;
+        }
+      }
 
       if (update) {
         setUpdateAvailable(true);

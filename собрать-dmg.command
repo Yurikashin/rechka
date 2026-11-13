@@ -44,9 +44,27 @@ fi
 
 echo "Версии: $(cargo --version) | bun $(bun --version) | $(cmake --version | head -1)"
 
-# 5. Зависимости и сборка
+# 5. Зависимости, версия сборки, ключ обновлений и сборка
 bun install
-bun run tauri build --bundles app,dmg --config src-tauri/tauri.rechka.conf.json
+# Каждая сборка получает свой номер: 0.10.<ГГДДДЧЧММ> (год, день года, время).
+# По нему установленные Речки понимают, что вышло обновление.
+BASE_VERSION="$(sed -n 's/.*"version": *"\([0-9]*\.[0-9]*\)\..*/\1/p' src-tauri/tauri.conf.json | head -1)"
+BUILD_VERSION="${BASE_VERSION}.$(date +%y%j%H%M | sed 's/^0*//')"
+export RECHKA_BUILD_VERSION="${BUILD_VERSION}"
+# Ключ подписи обновлений: создаётся один раз и хранится только на этом Mac.
+# ПОТЕРЯ КЛЮЧА = установленные Речки перестанут принимать обновления. Сделайте копию ~/.rechka.
+KEY_DIR="${HOME}/.rechka"
+KEY="${KEY_DIR}/updater.key"
+if [ ! -f "${KEY}" ]; then
+  echo "Создаю ключ подписи обновлений (один раз): ${KEY}"
+  mkdir -p "${KEY_DIR}"
+  chmod 700 "${KEY_DIR}"
+  bun run tauri signer generate --ci -p "" -w "${KEY}"
+fi
+PUBKEY="$(tr -d '\n' < "${KEY}.pub")"
+OVERRIDE="{\"version\":\"${BUILD_VERSION}\",\"plugins\":{\"updater\":{\"pubkey\":\"${PUBKEY}\"}}}"
+echo "Версия сборки: ${BUILD_VERSION}"
+bun run tauri build --bundles app,dmg --config src-tauri/tauri.rechka.conf.json --config "${OVERRIDE}"
 
 # 6. Постоянная подпись (чтобы macOS не сбрасывала разрешения после каждой пересборки)
 APP_SRC="src-tauri/target/release/bundle/macos/Rechka.app"
@@ -82,6 +100,15 @@ APP_SRC="$SIGN_DIR/Rechka.app"
 codesign --force --options runtime --entitlements src-tauri/Entitlements.plist --sign "${IDENT}" "$APP_SRC"
 codesign --verify --strict "$APP_SRC"
 codesign -dr - "$APP_SRC" 2>&1 | tail -1
+
+# 6b. Пакет обновления: подписанная Речка в .tar.gz + подпись ключом обновлений
+UPD_DIR="${ROOT}/../готовый-dmg/update"
+rm -rf "${UPD_DIR}"
+mkdir -p "${UPD_DIR}"
+COPYFILE_DISABLE=1 tar -czf "${UPD_DIR}/Rechka.app.tar.gz" -C "${SIGN_DIR}" Rechka.app
+TAURI_SIGNING_PRIVATE_KEY_PASSWORD="" bun run tauri signer sign -f "${KEY}" -p "" "${UPD_DIR}/Rechka.app.tar.gz"
+echo "${BUILD_VERSION}" > "${UPD_DIR}/version.txt"
+echo "Пакет обновления: ${UPD_DIR}"
 
 # 7. Пересобираем .dmg из подписанного приложения и копируем рядом
 DMG="$(ls -t src-tauri/target/release/bundle/dmg/*.dmg | head -1)"

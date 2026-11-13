@@ -74,7 +74,33 @@ const LATIN_TERMS: &[(&str, &str)] = &[
     (r"па(?:уэ|ве)р\s?поинт+", "PowerPoint"),
     (r"(?:чат|chat)[-\s]?(?:гпт|gpt|джи\s?пи\s?ти)", "ChatGPT"),
     (r"оупен\s?эй\s?ай|опен\s?эй\s?ай|опенаи", "OpenAI"),
+    (r"(?:клод|claude)\s?опус+", "Claude Opus"),
+    (r"(?:клод|claude)\s?сон(?:н)?ет+", "Claude Sonnet"),
+    (r"(?:клод|claude)\s?хайку", "Claude Haiku"),
     (r"клод+", "Claude"),
+    (r"фейбл+", "Fable"),
+    (r"(?:эн|н)\s?види(?:а|я|и|ю|ей|ии|ией|ию)?", "Nvidia"),
+    (r"джемини", "Gemini"),
+    (r"дип\s?сик+", "DeepSeek"),
+    (r"перплексити", "Perplexity"),
+    (r"мид\s?джорни", "Midjourney"),
+    (r"копайлот+", "Copilot"),
+    (r"грок+", "Grok"),
+    (r"хаггинг\s?фейс+", "Hugging Face"),
+    (r"интел+", "Intel"),
+    (r"эй\s?эм\s?ди", "AMD"),
+    (r"самсунг+", "Samsung"),
+    (r"сяоми", "Xiaomi"),
+    (r"хуав[еэ]й", "Huawei"),
+    (r"нетфликс+", "Netflix"),
+    (r"амазон+", "Amazon"),
+    (r"эйр\s?подс", "AirPods"),
+    (r"линкедин+", "LinkedIn"),
+    (r"твиттер+", "Twitter"),
+    (r"клауд\s?флер+", "Cloudflare"),
+    (r"постгрес+", "Postgres"),
+    (r"кубернетес+", "Kubernetes"),
+    (r"убунту", "Ubuntu"),
     (r"антропик+", "Anthropic"),
     (r"докер+", "Docker"),
     (r"джава\s?скрипт+", "JavaScript"),
@@ -187,6 +213,67 @@ pub fn apply_place_names(text: &str) -> String {
         }
     }
     out
+}
+
+/// Number words a spoken version or decimal is made of ("пять точка два").
+const NUMBER_WORDS: &[(&str, &str)] = &[
+    ("ноль", "0"),
+    ("нуль", "0"),
+    ("один", "1"),
+    ("одна", "1"),
+    ("два", "2"),
+    ("две", "2"),
+    ("три", "3"),
+    ("четыре", "4"),
+    ("пять", "5"),
+    ("шесть", "6"),
+    ("семь", "7"),
+    ("восемь", "8"),
+    ("девять", "9"),
+    ("десять", "10"),
+    ("zero", "0"),
+    ("one", "1"),
+    ("two", "2"),
+    ("three", "3"),
+    ("four", "4"),
+    ("five", "5"),
+    ("six", "6"),
+    ("seven", "7"),
+    ("eight", "8"),
+    ("nine", "9"),
+    ("ten", "10"),
+];
+
+static SPOKEN_DOT: Lazy<Regex> = Lazy::new(|| {
+    let words: Vec<&str> = NUMBER_WORDS.iter().map(|(w, _)| *w).collect();
+    let num = format!(r"(\d+|{})", words.join("|"));
+    Regex::new(&format!(r"(?i)\b{num}\s+(?:точка|point|dot)\s+{num}\b"))
+        .expect("valid spoken dot pattern")
+});
+
+fn number_value(token: &str) -> String {
+    let lower = token.to_lowercase();
+    NUMBER_WORDS
+        .iter()
+        .find(|(w, _)| *w == lower)
+        .map_or(token.to_string(), |(_, d)| d.to_string())
+}
+
+/// "Fable 5 точка 2" / "пять точка два" / "version 2 point 1" -> "5.2", "2.1".
+/// Runs until nothing changes so "1 точка 2 точка 3" becomes "1.2.3".
+pub fn apply_spoken_numbers(text: &str) -> String {
+    let mut out = text.to_string();
+    loop {
+        let next = SPOKEN_DOT
+            .replace_all(&out, |caps: &regex::Captures| {
+                format!("{}.{}", number_value(&caps[1]), number_value(&caps[2]))
+            })
+            .into_owned();
+        if next == out {
+            return out;
+        }
+        out = next;
+    }
 }
 
 /// The user's own whole-word replacements, case-insensitive, applied in order.
@@ -542,6 +629,32 @@ mod tests {
             "Открой Safari, зайди в GitHub и проверь почту в Apple Mail."
         );
         assert_eq!(apply_latin_terms("Найди в Гугле"), "Найди в Google");
+        assert_eq!(
+            apply_latin_terms("акции Энвидиа и чипы Нвидии"),
+            "акции Nvidia и чипы Nvidia"
+        );
+        assert_eq!(
+            apply_latin_terms("модель Клод Опус и Фейбл"),
+            "модель Claude Opus и Fable"
+        );
+        assert_eq!(
+            apply_latin_terms("искусственный интеллект"),
+            "искусственный интеллект"
+        );
+        assert_eq!(
+            apply_spoken_numbers("модель Fable 5 точка 2"),
+            "модель Fable 5.2"
+        );
+        assert_eq!(apply_spoken_numbers("версия пять точка два"), "версия 5.2");
+        assert_eq!(
+            apply_spoken_numbers("macOS 1 точка 2 точка 3"),
+            "macOS 1.2.3"
+        );
+        assert_eq!(apply_spoken_numbers("version two point one"), "version 2.1");
+        assert_eq!(
+            apply_spoken_numbers("Точка сбора в пять"),
+            "Точка сбора в пять"
+        );
         assert_eq!(apply_latin_terms("пришли на мейл"), "пришли на email");
         assert_eq!(apply_latin_terms("в Эпл Мэйл"), "в Apple Mail");
         assert_eq!(

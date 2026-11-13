@@ -615,10 +615,12 @@ pub fn tray_tooltip() -> String {
 }
 
 fn version_label() -> String {
+    // Rechka: release builds carry a per-build version (собрать-dmg.command).
+    let version = option_env!("RECHKA_BUILD_VERSION").unwrap_or(env!("CARGO_PKG_VERSION"));
     if cfg!(debug_assertions) {
-        format!("Речка v{} (Dev)", env!("CARGO_PKG_VERSION"))
+        format!("Речка v{} (Dev)", version)
     } else {
-        format!("Речка v{}", env!("CARGO_PKG_VERSION"))
+        format!("Речка v{}", version)
     }
 }
 
