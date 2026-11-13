@@ -11,10 +11,10 @@ REPO="Yurikashin/rechka"
 BRANCH="dictovka"
 
 DMG="${1:-}"
-if [ -z "$DMG" ]; then
+if [ -z "${DMG}" ]; then
   DMG="$(ls -t ../готовый-dmg/Rechka_*_aarch64.dmg 2>/dev/null | head -1 || true)"
 fi
-[ -n "$DMG" ] && [ -f "$DMG" ] || { echo "Не найден .dmg — сначала соберите: собрать-dmg.command"; exit 1; }
+[ -n "${DMG}" ] && [ -f "${DMG}" ] || { echo "Не найден .dmg — сначала соберите: собрать-dmg.command"; exit 1; }
 
 command -v gh >/dev/null 2>&1 || { echo "Нужен GitHub CLI (gh)."; exit 1; }
 gh auth status -h github.com >/dev/null 2>&1 || gh auth login -h github.com -p https -w
@@ -26,12 +26,12 @@ TAG="v${VERSION}-${STAMP}"
 COMMIT="${RECHKA_COMMIT:-$(git rev-parse --short HEAD 2>/dev/null || echo "?")}"
 
 WORK="$(mktemp -d)"
-trap 'rm -rf "$WORK"' EXIT
-cp "$DMG" "$WORK/Rechka_aarch64.dmg"
+trap 'rm -rf "${WORK}"' EXIT
+cp "${DMG}" "${WORK}/Rechka_aarch64.dmg"
 # .command внутри zip сохраняет право на запуск при пересылке (Telegram, почта).
-cp "install/Установить Речку.command" "$WORK/"
-chmod +x "$WORK/Установить Речку.command"
-(cd "$WORK" && ditto -c -k --norsrc --noextattr "Установить Речку.command" "Install-Rechka.zip")
+cp "install/Установить Речку.command" "${WORK}/"
+chmod +x "${WORK}/Установить Речку.command"
+(cd "${WORK}" && ditto -c -k --norsrc --noextattr "Установить Речку.command" "Install-Rechka.zip")
 
 NOTES="Речка ${VERSION}, сборка ${STAMP} (коммит ${COMMIT}). Mac на Apple Silicon (M1 и новее).
 
@@ -42,16 +42,16 @@ curl -fsSL https://raw.githubusercontent.com/${REPO}/${BRANCH}/install.sh | bash
 Или скачайте «Install-Rechka.zip», откройте «Установить Речку.command».
 Первый раз: Системные настройки → Конфиденциальность и безопасность → «Всё равно открыть»."
 
-echo "== Выпуск $TAG из $DMG"
-gh release create "$TAG" \
-  --repo "$REPO" \
-  --target "$BRANCH" \
+echo "== Выпуск ${TAG} из ${DMG}"
+gh release create "${TAG}" \
+  --repo "${REPO}" \
+  --target "${BRANCH}" \
   --title "Речка ${VERSION} (${STAMP})" \
-  --notes "$NOTES" \
+  --notes "${NOTES}" \
   --latest \
-  "$WORK/Rechka_aarch64.dmg" \
-  "$WORK/Install-Rechka.zip"
+  "${WORK}/Rechka_aarch64.dmg" \
+  "${WORK}/Install-Rechka.zip"
 
 echo
-echo "ГОТОВО: https://github.com/$REPO/releases/tag/$TAG"
+echo "ГОТОВО: https://github.com/${REPO}/releases/tag/${TAG}"
 echo "Установка: curl -fsSL https://raw.githubusercontent.com/${REPO}/${BRANCH}/install.sh | bash"
