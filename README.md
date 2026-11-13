@@ -1,3 +1,29 @@
+# Речка (Rechka)
+
+Бесплатная офлайн-диктовка для Mac: русский и английский, в том числе вперемешку.
+Форк [Handy](https://github.com/cjpais/Handy) (MIT). Нужен Mac на Apple Silicon (M1 и новее).
+
+## Установка
+
+**Одной строкой** — откройте Терминал, вставьте и нажмите Enter:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/Yurikashin/rechka/dictovka/install.sh | bash
+```
+
+**Файлом** — скачайте `Install-Rechka.zip` из [последнего выпуска](https://github.com/Yurikashin/rechka/releases/latest),
+откройте «Установить Речку.command». Первый раз macOS спросит разрешение:
+Системные настройки → Конфиденциальность и безопасность → «Всё равно открыть».
+
+Обновление — та же команда ещё раз. После установки разрешите микрофон и
+«Универсальный доступ» для Rechka.
+
+Почему не просто .dmg: программа не заверена платным аккаунтом Apple Developer,
+поэтому скачанный из браузера .dmg macOS считает «повреждённым». Установщик
+скачивает программу так, что этой пометки нет.
+
+---
+
 # Handy
 
 [![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/invite/WVBeWsNXK4)
